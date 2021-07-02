@@ -36,9 +36,47 @@ button_tag "Save", class: primary_button | "uppercase"
 
 ### Summary
 
-Expend `token_list` and `tag.attributes` helpers to construct
-`Attributes` and `TokenList` instances that are smart about merging with
-other values turning themselves into HTML.
+Expand `token_list` and `tag.attributes` helpers to construct `Attributes` and
+`TokenList` instances that are smart about merging with other values turning
+themselves into HTML.
+
+Additionally, introduce the `with_attributes` view helper. Inspired by
+`Object#with_options`, when the `with_attributes` helper is called with a block,
+it yields a block argument that merges options into a base set of attributes.
+For example:
+
+```ruby
+with_attributes class: "border rounded-sm p-4" do |styled|
+  styled.link_to "I'm styled!", "/"
+  # #=> <a class="border rounded-sm p-4" href="/">I'm styled!</a>
+end
+```
+
+When the block is omitted, the object that would be the block parameter is
+returned:
+
+```ruby
+styled = with_attributes class: "border rounded-sm p-4"
+styled.link_to "I'm styled!", "/"
+# #=> <a class="border rounded-sm p-4" href="/">I'm styled!</a>
+```
+
+To change the receiver from the view context, pass an object as the first
+argument:
+
+```ruby
+button = with_attributes class: "border rounded-sm p-4"
+button.link_to "I have a border", "/"
+# #=> <a class="border rounded-sm p-4" href="/">I have a border</a>
+
+primary = with_attributes button, class: "text-red-500 border-red-500"
+primary.link_to "I have a red border", "/"
+# #=> <a class="border rounded-sm p-4 text-red-500 border-red-500" href="/">I have a red border</a>
+
+secondary = with_attributes button, class: "text-blue-500 border-blue-500"
+secondary.link_to "I have a blue border", "/"
+# #=> <a class="border rounded-sm p-4 text-blue-500 border-blue-500" href="/">I have a blue border</a>
+```
 
 For example, consider the following helpers:
 
@@ -52,8 +90,8 @@ module ApplicationHelper
     class_names "py-2 px-4 font-semibold shadow-md focus:outline-none focus:ring-2"
   end
 
-  def primary_button
-    button | "bg-black rounded-lg text-white hover:bg-yellow-300 focus:ring-yellow-300 focus:ring-opacity-75"
+  def primary(context = self)
+    with_attributes context, class: button | "bg-black rounded-lg text-white hover:bg-yellow-300 focus:ring-yellow-300 focus:ring-opacity-75"
   end
 
   def pagination_controller
@@ -66,21 +104,21 @@ module ApplicationHelper
 end
 ```
 
-Using those helpers (or some other means of declaring re-usable
-`class_names`, `token_list`, or `tag.attributes` calls), consider the
+Using those helpers (or some other means of declaring re-usable `class_names`,
+`token_list`, `with_attributes`, or `tag.attributes` calls), consider the
 following diffs:
 
 ```diff
  <% if page.before_last? %>
    <div class="hidden last-of-type:flex justify-center my-6">
 -    <%= link_to url_for(page: page.next_param, q: params[:q]), rel: "next", class: "py-2 px-4 bg-black text-white font-semibold rounded-lg shadow-md hover:bg-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-opacity-75" do %>
-+    <%= link_to url_for(page: page.next_param, q: params[:q]), rel: "next", class: primary_button do %>
++    <%= primary.link_to url_for(page: page.next_param, q: params[:q]), rel: "next" do %>
        Load more
      <% end %>
    </div>
 
 -  <%= form.button class: "colspan-2 py-2 px-4 bg-black text-white font-semibold rounded-lg shadow-md hover:bg-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-opacity-75" do %>
-+  <%= form.button class: primary_button | "colspan-2" do %>
++  <%= primary(form).button class: "colspan-2" do %>
      Sign in
    <% end %>
  <% end %>
@@ -95,7 +133,7 @@ following diffs:
 
 If we're interested in supporting this, there is some other related work:
 
-* If there are scenarios where a view wants to opt-out of the values that have been iteratively built up to that point, it might be useful to declare `class_names!`, `token_list!`, and `tag.attributes!` variants to construct instances that don't merge and instead reset the values passed: 
+* If there are scenarios where a view wants to opt-out of the values that have been iteratively built up to that point, it might be useful to declare `class_names!`, `token_list!`, and `tag.attributes!` variants to construct instances that don't merge and instead reset the values passed:
 ```ruby
 class_names("font-semibold") | class_names!("font-bold") #=> "font-bold"
 ```

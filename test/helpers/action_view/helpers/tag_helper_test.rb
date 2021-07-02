@@ -172,4 +172,27 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
     assert_kind_of ActionView::AttributesAndTokenLists::TokenList, tokens
     assert_equal %w[ one two ], tokens.to_a
   end
+
+  test "with_attributes can have options decorated onto it" do
+    with_attributes class: "one two" do |styled|
+      assert_equal %{<a class="one two" href="/">styled</a>}, styled.link_to("styled", "/")
+      assert_equal %{<a class="one two three" href="/">styled</a>}, styled.link_to("styled", "/", class: "three")
+    end
+  end
+
+  test "with_attributes accepts another Attributes instance to have options decorated onto" do
+    base = with_attributes class: "one two"
+    styled = with_attributes base, class: "three"
+
+    assert_equal %{<a class="one two" href="/">styled</a>}, base.link_to("styled", "/")
+    assert_equal %{<a class="one two three" href="/">styled</a>}, styled.link_to("styled", "/")
+    assert_equal %{<a class="one two three four" href="/">styled</a>}, styled.link_to("styled", "/", class: "four")
+  end
+
+  test "with_attributes accepts a context to have options decorated onto" do
+    styled = with_attributes tag, class: "one"
+
+    assert_equal(%{<a class="one" href="/">styled</a>}, styled.a(href: "/") { "styled" })
+    assert_equal(%{<a class="one two" href="/">styled</a>}, styled.a(class: "two", href: "/") { "styled" })
+  end
 end

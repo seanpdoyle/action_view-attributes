@@ -62,6 +62,7 @@ module ActionView
       end
       alias_method :+, :merge
       alias_method :|, :merge
+      alias_method :deep_merge, :merge
 
       def to_s
         html_ready_attributes = @attributes.transform_values do |value|

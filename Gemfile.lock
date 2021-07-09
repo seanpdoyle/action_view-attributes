@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     action_view-attributes_and_token_lists (0.1.0)
-      rails (~> 6.1.3, >= 6.1.3.1)
+      rails (>= 6.1.3.1)
 
 GEM
   remote: https://rubygems.org/

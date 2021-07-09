@@ -40,8 +40,9 @@ module ActionView
         end
       end
 
-      def initialize(tag_builder, attributes)
+      def initialize(tag_builder, view_context, attributes)
         @tag_builder = tag_builder
+        @view_context = view_context
         @attributes = Attributes.deep_wrap_token_lists(attributes)
       end
 
@@ -50,7 +51,7 @@ module ActionView
           value, override = @attributes[key], other[key]
 
           if value.is_a?(Hash) && override.is_a?(Hash)
-            Attributes.new(@tag_builder, value).merge(override)
+            Attributes.new(@tag_builder, @view_context, value).merge(override)
           elsif value.respond_to?(:merge)
             value.merge(override)
           else
@@ -58,11 +59,16 @@ module ActionView
           end
         end
 
-        Attributes.new(@tag_builder, attributes)
+        Attributes.new(@tag_builder, @view_context, attributes)
       end
       alias_method :+, :merge
       alias_method :|, :merge
       alias_method :deep_merge, :merge
+
+      def with_attributes(**options, &block)
+        @view_context.with_attributes(**merge(options), &block)
+      end
+      alias_method :with_options, :with_attributes
 
       def to_s
         html_ready_attributes = @attributes.transform_values do |value|

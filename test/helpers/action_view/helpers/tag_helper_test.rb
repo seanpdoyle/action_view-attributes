@@ -195,4 +195,20 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
     assert_equal(%{<a class="one" href="/">styled</a>}, styled.a(href: "/") { "styled" })
     assert_equal(%{<a class="one two" href="/">styled</a>}, styled.a(class: "two", href: "/") { "styled" })
   end
+
+  test "with_attributes can be chained off an Attributes instance" do
+    attributes = tag.attributes class: "one"
+
+    styled = attributes.with_attributes class: "two"
+
+    assert_equal %{<span class="one two">test</span>}, styled.content_tag(:span, "test")
+  end
+
+  test "with_options on an Attributes instance is aliased to with_attributes" do
+    attributes = tag.attributes class: "one"
+
+    styled = attributes.with_options class: "two"
+
+    assert_equal %{<span class="one two">test</span>}, styled.content_tag(:span, "test")
+  end
 end

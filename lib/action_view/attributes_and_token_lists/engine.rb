@@ -59,7 +59,7 @@ module ActionView
           #   <input <%= tag.attributes(type: :text, aria: { label: "Search" }) %> >
           #   # => <input type="text" aria-label="Search">
           def attributes(attributes = {})
-            Attributes.new(self, attributes || {})
+            Attributes.new(self, @view_context, attributes || {})
           end
 
           private

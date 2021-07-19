@@ -51,7 +51,7 @@ module ActionView
           value, override = @attributes[key], other[key]
 
           if value.is_a?(Hash) && override.is_a?(Hash)
-            Attributes.new(@tag_builder, @view_context, value).merge(override)
+            Attributes.new(@tag_builder, @view_context, value).merge(override).to_hash
           elsif value.respond_to?(:merge)
             value.merge(override)
           else

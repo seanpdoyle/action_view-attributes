@@ -8,5 +8,7 @@ the version links.
 
 ## main
 
+* Ensure that `Attributes` are compliant with Action View-provided `tag` helpers 
+
 * Add `Attributes#with_attributes` and `Attributes#with_options` alias to enable
   decorating and chaining

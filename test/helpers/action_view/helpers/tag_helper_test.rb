@@ -173,6 +173,24 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
     assert_equal %w[ one two ], tokens.to_a
   end
 
+  test "tag.attributes are serialized by the tag helper" do
+    attributes = tag.attributes data: { controller: "one two" }
+
+    assert_equal %{<form data-controller="one two"></form>}, tag.form(attributes)
+  end
+
+  test "tag.attributes are serialized by the tag helper when merged" do
+    attributes = tag.attributes(class: "one").merge(class: "two")
+
+    assert_equal %{<form class="one two"></form>}, tag.form(attributes)
+  end
+
+  test "tag.attributes are serialized by the tag helper when deep merged" do
+    attributes = tag.attributes(data: { controller: "one two" }).merge(data: { controller: "three" })
+
+    assert_equal %{<form data-controller="one two three"></form>}, tag.form(attributes)
+  end
+
   test "with_attributes can have options decorated onto it" do
     with_attributes class: "one two" do |styled|
       assert_equal %{<a class="one two" href="/">styled</a>}, styled.link_to("styled", "/")

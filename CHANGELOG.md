@@ -8,7 +8,10 @@ the version links.
 
 ## main
 
-* Ensure that `Attributes` are compliant with Action View-provided `tag` helpers 
+* Enable chaining `#with_attributes` and `#tag` off of `Attributes` instances
+  and instances of `AttributeMerger` returned by other `#with_attributes` calls
+
+* Ensure that `Attributes` are compliant with Action View-provided `tag` helpers
 
 * Add `Attributes#with_attributes` and `Attributes#with_options` alias to enable
   decorating and chaining

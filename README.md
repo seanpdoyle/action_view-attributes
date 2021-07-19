@@ -23,15 +23,25 @@ how to serialize themselves into HTML views through their `#to_s` methods.
 
 ```ruby
 def button
-  class_names "py-2 px-4 font-semibold shadow-md focus:outline-none focus:ring-2"
+  tag.attributes class: "py-2 px-4 font-semibold shadow-md focus:outline-none focus:ring-2"
 end
 
 def primary_button
-  button | "bg-black rounded-lg text-white hover:bg-yellow-300 focus:ring-yellow-300 focus:ring-opacity-75"
+  button.with_attributes class: "bg-black rounded-lg text-white hover:bg-yellow-300 focus:ring-yellow-300 focus:ring-opacity-75"
 end
 
-button_tag "Save", class: primary_button | "uppercase"
+primary_button.button_tag "Save", class: "uppercase"
 #=> "<button class="py-2 px-4 font-semibold shadow-md focus:outline-none focus:ring-2 bg-black rounded-lg text-white hover:bg-yellow-300 focus:ring-yellow-300 focus:ring-opacity-75 uppercase">Save</button>
+
+primary_button.link_to "Cancel", "/", class: "uppercase"
+#=> "<a href="/" class="py-2 px-4 font-semibold shadow-md focus:outline-none focus:ring-2 bg-black rounded-lg text-white hover:bg-yellow-300 focus:ring-yellow-300 focus:ring-opacity-75 uppercase">Cancel</a>
+
+primary_button.content_tag :a, "Cancel", href: "/", class: "uppercase"
+#=> "<a href="/" class="py-2 px-4 font-semibold shadow-md focus:outline-none focus:ring-2 bg-black rounded-lg text-white hover:bg-yellow-300 focus:ring-yellow-300 focus:ring-opacity-75 uppercase">Cancel</a>
+
+primary_button_builder = tag.with_attributes(primary_button)
+primary_button_builder.a "Cancel", href: "/", class: "uppercase"
+#=> "<a href="/" class="py-2 px-4 font-semibold shadow-md focus:outline-none focus:ring-2 bg-black rounded-lg text-white hover:bg-yellow-300 focus:ring-yellow-300 focus:ring-opacity-75 uppercase">Cancel</a>
 ```
 
 ### Summary
@@ -87,11 +97,11 @@ module ApplicationHelper
   end
 
   def button
-    class_names "py-2 px-4 font-semibold shadow-md focus:outline-none focus:ring-2"
+    tag.attributes class: "py-2 px-4 font-semibold shadow-md focus:outline-none focus:ring-2"
   end
 
-  def primary(context = self)
-    with_attributes context, class: button | "bg-black rounded-lg text-white hover:bg-yellow-300 focus:ring-yellow-300 focus:ring-opacity-75"
+  def primary
+    button.with_attributes class: "bg-black rounded-lg text-white hover:bg-yellow-300 focus:ring-yellow-300 focus:ring-opacity-75"
   end
 
   def pagination_controller
@@ -116,15 +126,17 @@ following diffs:
        Load more
      <% end %>
    </div>
+ <% end %>
 
+ <%= form_with url: sessions_path do |form| %>
 -  <%= form.button class: "colspan-2 py-2 px-4 bg-black text-white font-semibold rounded-lg shadow-md hover:bg-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-opacity-75" do %>
-+  <%= primary(form).button class: "colspan-2" do %>
++  <%= form.button primary.merge(class: "colspan-2") do %>
      Sign in
    <% end %>
  <% end %>
 
--<section id="entries" class="max-w-prose max-w-sm w-full lg:w-1/3" data-controller="pagination sorted" data-sorted-attribute-name-value="data-code" data-action="turbo:before-cache@document->pagination#preserveScroll turbo:before-render@document->pagination#injectNextPageIntoBody">
-+<section id="entries" class="<%= feed_section %>" <%= pagination_controller | sorted_controller %>>
+-<section id="entries" class="max-w-prose max-w-sm w-full lg:w-1/3 font-medium" data-controller="pagination sorted" data-sorted-attribute-name-value="data-code" data-action="turbo:before-cache@document->pagination#preserveScroll turbo:before-render@document->pagination#injectNextPageIntoBody">
++<section id="entries" class="<%= feed_section | "font-medium" %>" <%= pagination_controller | sorted_controller %>>
    <%= render partial: "entries/page", object: @page %>
  </section>
 ```

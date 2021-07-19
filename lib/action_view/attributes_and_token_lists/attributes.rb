@@ -17,7 +17,7 @@ module ActionView
         aria-owns
         aria-dropeffect
         aria-relevant
-      ].freeze
+      ].flat_map { |key| [ key, key.to_s ] }.freeze
       NESTED_TOKEN_LISTS_ATTRIBUTES = %i[
         action
         controller
@@ -28,7 +28,7 @@ module ActionView
         owns
         dropeffect
         relevant
-      ].freeze
+      ].flat_map { |key| [ key, key.to_s ] }.freeze
 
       def self.deep_wrap_token_lists(attributes)
         attributes.deep_merge(attributes) do |attribute, value|
@@ -43,10 +43,12 @@ module ActionView
       def initialize(tag_builder, view_context, attributes)
         @tag_builder = tag_builder
         @view_context = view_context
-        @attributes = Attributes.deep_wrap_token_lists(attributes)
+        @attributes = Attributes.deep_wrap_token_lists(attributes).with_indifferent_access
       end
 
       def merge(other)
+        other = other.to_hash.with_indifferent_access
+
         attributes = @attributes.merge(other) do |key|
           value, override = @attributes[key], other[key]
 
@@ -65,10 +67,14 @@ module ActionView
       alias_method :|, :merge
       alias_method :deep_merge, :merge
 
-      def with_attributes(**options, &block)
+      def with_attributes(options, &block)
         @view_context.with_attributes(**merge(options), &block)
       end
       alias_method :with_options, :with_attributes
+
+      def tag
+        AttributeMerger.new(@view_context, @view_context.tag, self)
+      end
 
       def to_s
         html_ready_attributes = @attributes.transform_values do |value|

@@ -59,7 +59,7 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
   test "tag.attributes can be splatted" do
     attributes = { id: 1, **tag.attributes(class: class_names("one")) }
 
-    assert_equal({ id: 1, class: class_names("one") }, attributes)
+    assert_equal({ id: 1, "class" => class_names("one") }, attributes)
   end
 
   test "tag.attributes merges like a Hash of attributes" do
@@ -77,6 +77,10 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
   test "tag.attributes deeply merges Hash attributes" do
     assert_equal %(data-controller="one two"), tag.attributes(data: { controller: token_list("one") }).merge(data: { controller: "two" }).to_s
     assert_equal %(data-controller="one two"), tag.attributes(data: { controller: "one" }).merge(data: { controller: token_list("two") }).to_s
+  end
+
+  test "tag.attributes merges with indifferent access" do
+    assert_equal %(data-controller="one two"), tag.attributes("data-controller" => "one").merge("data-controller": "two").to_s
   end
 
   test "tag.attributes reverse merges Attributes" do
@@ -191,6 +195,12 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
     assert_equal %{<form data-controller="one two three"></form>}, tag.form(attributes)
   end
 
+  test "tag.attributes instances can chain #tag calls" do
+    attributes = tag.attributes(data: { controller: "one two" }).merge(data: { controller: "three" })
+
+    assert_equal %{<form data-controller="one two three"></form>}, attributes.tag.form
+  end
+
   test "with_attributes can have options decorated onto it" do
     with_attributes class: "one two" do |styled|
       assert_equal %{<a class="one two" href="/">styled</a>}, styled.link_to("styled", "/")
@@ -198,35 +208,93 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
     end
   end
 
-  test "with_attributes accepts another Attributes instance to have options decorated onto" do
+  test "with_attributes accepts an Attributes instance" do
+    base = tag.attributes class: "one"
+    styled = with_attributes base
+
+    assert_equal %{<span class="one">test</span>}, styled.content_tag(:span, "test")
+  end
+
+  test "with_attributes can chain with_attributes calls decorate options further" do
     base = with_attributes class: "one two"
-    styled = with_attributes base, class: "three"
+    styled = base.with_attributes class: "three"
 
     assert_equal %{<a class="one two" href="/">styled</a>}, base.link_to("styled", "/")
     assert_equal %{<a class="one two three" href="/">styled</a>}, styled.link_to("styled", "/")
     assert_equal %{<a class="one two three four" href="/">styled</a>}, styled.link_to("styled", "/", class: "four")
   end
 
-  test "with_attributes accepts a context to have options decorated onto" do
-    styled = with_attributes tag, class: "one"
+  test "tag.attributes.with_attributes merges with indifferent access" do
+    base = with_attributes "class" => "one two"
+    styled = base.with_attributes class: "three"
 
-    assert_equal(%{<a class="one" href="/">styled</a>}, styled.a(href: "/") { "styled" })
-    assert_equal(%{<a class="one two" href="/">styled</a>}, styled.a(class: "two", href: "/") { "styled" })
+    assert_equal %{<a class="one two" href="/">styled</a>}, base.link_to("styled", "/")
+    assert_equal %{<a class="one two three" href="/">styled</a>}, base.link_to("styled", "/", class: "three")
+    assert_equal %{<a class="one two three" href="/">styled</a>}, styled.link_to("styled", "/")
   end
 
   test "with_attributes can be chained off an Attributes instance" do
     attributes = tag.attributes class: "one"
 
-    styled = attributes.with_attributes class: "two"
+    assert_equal %{<span class="one two">test</span>}, attributes.with_attributes(class: "two").tag.span("test")
+    assert_equal %{<span class="one two">test</span>}, attributes.with_attributes("class" => "two").tag.span("test")
+    assert_equal %{<span class="one two three">test</span>}, attributes.with_attributes("class" => "two").tag.span("test", "class" => "three")
+  end
+
+  test "with_attributes chained off an Attributes instance accepts an Attributes instance" do
+    base = tag.attributes class: "one"
+    attributes = tag.attributes class: "two"
+    styled = base.with_attributes attributes
 
     assert_equal %{<span class="one two">test</span>}, styled.content_tag(:span, "test")
   end
 
-  test "with_options on an Attributes instance is aliased to with_attributes" do
-    attributes = tag.attributes class: "one"
-
-    styled = attributes.with_options class: "two"
+  test "with_attributes chained off an Attributes instance accepts instances returned from with_attributes" do
+    base = with_attributes class: "one"
+    styled = base.with_attributes with_attributes class: "two"
 
     assert_equal %{<span class="one two">test</span>}, styled.content_tag(:span, "test")
+  end
+
+  test "with_attributes can be chained off a TagBuilder instance with indifferent access" do
+    styled = tag.with_attributes class: "one"
+
+    assert_equal(%{<a class="one" href="/">styled</a>}, styled.a(href: "/") { "styled" })
+    assert_equal(%{<a class="one two" href="/">styled</a>}, styled.a("class" => "two", href: "/") { "styled" })
+  end
+
+  test "with_attributes chained off a TagBuilder instance accept Attributes instances" do
+    styled = with_attributes class: "one two"
+
+    assert_equal %{<a class="one two" href="/">styled</a>}, tag.with_attributes(styled).a("styled", href: "/")
+  end
+
+  test "tag without arguments on an AttributeMerger instance continues the chain" do
+    styled = with_attributes class: "one"
+
+    assert_equal %{<span class="one">test</span>}, styled.tag.span("test")
+    assert_equal %{<span class="one">test</span>}, tag.span("test", **styled)
+    assert_equal %{<span class="one">test</span>}, tag.span(styled) { "test" }
+  end
+
+  test "tag with arguments on an AttributeMerger instance invokes the method" do
+    styled = with_attributes class: "one"
+
+    assert_equal %{<br class="one" />}, styled.tag(:br)
+  end
+
+  test "tag without arguments on an Attributes instance continues the chain" do
+    styled = tag.attributes class: "one"
+
+    assert_equal %{<span class="one">test</span>}, styled.tag.span("test")
+    assert_equal %{<span class="one">test</span>}, tag.span("test", **styled)
+    assert_equal %{<span class="one">test</span>}, tag.span(styled) { "test" }
+  end
+
+  test "tag with arguments on an Attributes instance invokes the method" do
+    styled = tag.attributes class: "one"
+
+    assert_equal %{<br class="one">}, styled.tag.br
+    assert_equal %{<br class="one">}, tag.br(styled)
   end
 end

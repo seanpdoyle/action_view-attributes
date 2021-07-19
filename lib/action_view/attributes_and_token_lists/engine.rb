@@ -3,6 +3,7 @@ module ActionView
     class Engine < ::Rails::Engine
       initializer "action_view-attributes_and_token_lists.helpers" do
         require "action_view/attributes_and_token_lists/attributes"
+        require "action_view/attributes_and_token_lists/attribute_merger"
         require "action_view/attributes_and_token_lists/token_list"
 
         ActionView::Helpers::TagHelper.module_eval do
@@ -28,26 +29,29 @@ module ActionView
           #   styled.link_to "I'm styled!", "/"
           #   #=> <a class="border rounded-sm p-4" href="/">I'm styled!</a>
           #
-          # To change the receiver from the view context, pass an object as the
-          # first argument:
+          # To change the receiver from the view context, invoke
+          # <tt>with_attributes</tt> an the instance returned from another
+          # <tt>with_attributes</tt> call:
           #
           #   button = with_attributes class: "border rounded-sm p-4"
           #   button.link_to "I have a border", "/"
           #   #=> <a class="border rounded-sm p-4" href="/">I have a border</a>
           #
-          #   primary = with_attributes button, class: "text-red-500 border-red-500"
+          #   primary = button.with_attributes class: "text-red-500 border-red-500"
           #   primary.link_to "I have a red border", "/"
           #   #=> <a class="border rounded-sm p-4 text-red-500 border-red-500" href="/">I have a red border</a>
           #
-          #   secondary = with_attributes button, class: "text-blue-500 border-blue-500"
+          #   secondary = button.with_attributes class: "text-blue-500 border-blue-500"
           #   secondary.link_to "I have a blue border", "/"
           #   #=> <a class="border rounded-sm p-4 text-blue-500 border-blue-500" href="/">I have a blue border</a>
           #
-          def with_attributes(context = self, **options, &block)
+          def with_attributes(options, &block)
+            attribute_merger = AttributeMerger.new self, self, options
+
             if block.nil?
-              ActiveSupport::OptionMerger.new context, tag.attributes(options)
+              attribute_merger
             else
-              context.with_options tag.attributes(options), &block
+              block.arity.zero? ? attribute_merger.instance_eval(&block) : block.call(attribute_merger)
             end
           end
         end
@@ -62,12 +66,27 @@ module ActionView
             Attributes.new(self, @view_context, attributes || {})
           end
 
+          def with_attributes(options, &block)
+            case options
+            when Attributes, AttributeMerger
+              options.tag(&block)
+            else
+              attribute_merger = AttributeMerger.new @view_context, self, options
+
+              if block.nil?
+                attribute_merger
+              else
+                block.arity.zero? ? attribute_merger.instance_eval(&block) : block.call(attribute_merger)
+              end
+            end
+          end
+
           alias_method :overridden_tag_string, :tag_string
           private :overridden_tag_string
 
           def tag_string(name, content = nil, escape_attributes: true, **options, &block)
             case content
-            when Attributes
+            when Attributes, AttributeMerger
               overridden_tag_string(name, **content.to_hash.merge(options), escape_attributes: escape_attributes, &block)
             else
               overridden_tag_string(name, content, escape_attributes: escape_attributes, **options, &block)

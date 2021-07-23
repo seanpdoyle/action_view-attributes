@@ -62,22 +62,25 @@ module ActionView
             Attributes.new(self, @view_context, attributes || {})
           end
 
+          alias_method :overridden_tag_string, :tag_string
+          private :overridden_tag_string
+
+          def tag_string(name, content = nil, escape_attributes: true, **options, &block)
+            case content
+            when Attributes
+              overridden_tag_string(name, **content.to_hash.merge(options), escape_attributes: escape_attributes, &block)
+            else
+              overridden_tag_string(name, content, escape_attributes: escape_attributes, **options, &block)
+            end
+          end
+
           private
 
+          alias_method :overridden_prefix_tag_option, :prefix_tag_option
           def prefix_tag_option(prefix, key, value, escape)
-            key = "#{prefix}-#{key.to_s.dasherize}"
+            value = value.to_s if value.is_a? TokenList
 
-            value =
-              case value
-              when String, Symbol, BigDecimal
-                value
-              when TokenList
-                value.to_a
-              else
-                value.to_json
-              end
-
-            tag_option(key, value, escape)
+            overridden_prefix_tag_option(prefix, key, value, escape)
           end
         end
       end

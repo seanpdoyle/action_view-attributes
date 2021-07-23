@@ -31,6 +31,11 @@ module ActionView
       def to_h
         @options.to_h
       end
+
+      def inspect
+        "#<%<class>s:0x%<addr>08x context=%<context>s>" %
+          { class: self.class, addr: object_id * 2, context: @context.inspect }
+      end
     end
   end
 end

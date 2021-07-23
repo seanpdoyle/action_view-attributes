@@ -87,6 +87,11 @@ module ActionView
 
         @tag_builder.tag_options(html_ready_attributes).to_s.strip.html_safe
       end
+
+      def inspect
+        "#<%<class>s:0x%<addr>08x attributes=%<attributes>s>" %
+          { class: self.class, addr: object_id * 2, attributes: @attributes.inspect }
+      end
     end
   end
 end

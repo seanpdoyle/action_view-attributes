@@ -65,6 +65,7 @@ module ActionView
       end
       alias_method :+, :merge
       alias_method :|, :merge
+      alias_method :call, :merge
       alias_method :deep_merge, :merge
 
       def with_attributes(options, &block)

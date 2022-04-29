@@ -74,6 +74,16 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
     assert_equal %(class="one two"), attributes.to_s
   end
 
+  test "tag.attributes.aria deeply merges" do
+    assert_equal %(aria-describedby="one two three"), tag.attributes(aria: { describedby: token_list("one") }).aria(describedby: "two").aria(describedby: "three").to_s
+    assert_equal %(aria-describedby="one two three"), tag.attributes(aria: { describedby: "one" }).aria(describedby: token_list("two")).aria(describedby: "three").to_s
+  end
+
+  test "tag.attributes.data deeply merges" do
+    assert_equal %(data-controller="one two three"), tag.attributes(data: { controller: token_list("one") }).data(controller: "two").data(controller: "three").to_s
+    assert_equal %(data-controller="one two three"), tag.attributes(data: { controller: "one" }).data(controller: token_list("two")).data(controller: "three").to_s
+  end
+
   test "tag.attributes deeply merges Hash attributes" do
     assert_equal %(data-controller="one two"), tag.attributes(data: { controller: token_list("one") }).merge(data: { controller: "two" }).to_s
     assert_equal %(data-controller="one two"), tag.attributes(data: { controller: "one" }).merge(data: { controller: token_list("two") }).to_s

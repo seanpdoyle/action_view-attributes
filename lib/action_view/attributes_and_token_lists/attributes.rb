@@ -46,6 +46,14 @@ module ActionView
         @attributes = Attributes.deep_wrap_token_lists(attributes).with_indifferent_access
       end
 
+      def aria(**attributes)
+        merge(aria: attributes)
+      end
+
+      def data(**attributes)
+        merge(data: attributes)
+      end
+
       def merge(other)
         other = other.to_hash.with_indifferent_access
 

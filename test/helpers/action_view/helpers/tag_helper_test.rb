@@ -279,6 +279,13 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
     assert_equal %{<a class="one two" href="/">styled</a>}, tag.with_attributes(styled).a("styled", href: "/")
   end
 
+  test "with_attributes accepts an empty Hash" do
+    attributes = {}
+    empty = with_attributes(attributes)
+
+    assert_equal %{<div>empty</div>}, tag.div("empty")
+  end
+
   test "tag without arguments on an AttributeMerger instance continues the chain" do
     styled = with_attributes class: "one"
 

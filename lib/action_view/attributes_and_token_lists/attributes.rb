@@ -76,7 +76,7 @@ module ActionView
       alias_method :call, :merge
       alias_method :deep_merge, :merge
 
-      def with_attributes(options, &block)
+      def with_attributes(options = {}, &block)
         @view_context.with_attributes(**merge(options), &block)
       end
       alias_method :with_options, :with_attributes

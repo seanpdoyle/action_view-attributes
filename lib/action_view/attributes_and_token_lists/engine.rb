@@ -45,7 +45,7 @@ module ActionView
           #   secondary.link_to "I have a blue border", "/"
           #   #=> <a class="border rounded-sm p-4 text-blue-500 border-blue-500" href="/">I have a blue border</a>
           #
-          def with_attributes(options, &block)
+          def with_attributes(options = {}, &block)
             attribute_merger = AttributeMerger.new self, self, options
 
             if block.nil?
@@ -66,7 +66,7 @@ module ActionView
             Attributes.new(self, @view_context, attributes || {})
           end
 
-          def with_attributes(options, &block)
+          def with_attributes(options = {}, &block)
             case options
             when Attributes, AttributeMerger
               options.tag(&block)
@@ -84,12 +84,12 @@ module ActionView
           alias_method :overridden_tag_string, :tag_string
           private :overridden_tag_string
 
-          def tag_string(name, content = nil, escape_attributes: true, **options, &block)
+          def tag_string(name, content = nil, escape: true, **options, &block)
             case content
             when Attributes, AttributeMerger
-              overridden_tag_string(name, **content.to_hash.merge(options), escape_attributes: escape_attributes, &block)
+              overridden_tag_string(name, **content.to_hash.merge(options), escape: escape, &block)
             else
-              overridden_tag_string(name, content, escape_attributes: escape_attributes, **options, &block)
+              overridden_tag_string(name, content, escape: escape, **options, &block)
             end
           end
 

@@ -84,12 +84,12 @@ module ActionView
           alias_method :overridden_tag_string, :tag_string
           private :overridden_tag_string
 
-          def tag_string(name, content = nil, escape: true, **options, &block)
+          def tag_string(name, content = nil, **options, &block)
             case content
             when Attributes, AttributeMerger
-              overridden_tag_string(name, **content.to_hash.merge(options), escape: escape, &block)
+              overridden_tag_string(name, **content.to_hash.merge(options), &block)
             else
-              overridden_tag_string(name, content, escape: escape, **options, &block)
+              overridden_tag_string(name, content, **options, &block)
             end
           end
 

@@ -14,6 +14,7 @@ end
 
 gem "rails", rails_constraint
 gem "sprockets-rails"
+gem "net-smtp"
 
 group :development do
   gem "sqlite3"

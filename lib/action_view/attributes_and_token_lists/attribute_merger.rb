@@ -6,8 +6,9 @@ module ActionView
         super context, @view_context.tag.attributes(options)
       end
 
-      def with_attributes(options, &block)
-        attribute_merger = AttributeMerger.new @view_context, @context, @options.merge(options)
+      def with_attributes(*options, **overrides, &block)
+        attributes = [*options, overrides].reduce(@options, :merge)
+        attribute_merger = AttributeMerger.new @view_context, @context, attributes
 
         if block.nil?
           attribute_merger

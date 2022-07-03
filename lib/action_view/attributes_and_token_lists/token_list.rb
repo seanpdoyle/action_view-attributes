@@ -33,7 +33,7 @@ module ActionView
       end
 
       def ==(other)
-        @tokens.to_a == other.to_a
+        Array(@tokens) == Array(other)
       end
 
       def to_s

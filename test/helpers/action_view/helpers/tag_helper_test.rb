@@ -1,6 +1,8 @@
 require "test_helper"
 
 class ActionView::Helpers::TagHelperTest < ActionView::TestCase
+  include ActionView::AttributesAndTokenLists::ApplicationHelper
+
   test "token_list and class_names helper" do
     [:token_list, :class_names].each do |helper_method|
       helper = ->(*arguments) { public_send(helper_method, *arguments) }
@@ -66,6 +68,21 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
     attributes = tag.attributes(id: 1, class: "one").merge(hidden: true)
 
     assert_equal %(id="1" class="one" hidden="hidden"), attributes.to_s
+  end
+
+  test "tag.attributes merges variable arguments" do
+    attributes = tag.attributes({id: 1, class: "one"}, {hidden: true})
+
+    assert_equal %(id="1" class="one" hidden="hidden"), attributes.to_s
+  end
+
+  test "tag.attributes merges variable arguments, with a final override" do
+    left = tag.attributes(id: 1)
+    right = tag.attributes(class: "one")
+
+    attributes = tag.attributes(left, right, class: "two")
+
+    assert_equal %(id="1" class="one two"), attributes.to_s
   end
 
   test "tag.attributes combines TokenList attributes" do

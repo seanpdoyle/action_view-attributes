@@ -40,7 +40,7 @@ module ActionView
         end
       end
 
-      def initialize(tag_builder, view_context, attributes)
+      def initialize(tag_builder, view_context, **attributes)
         @tag_builder = tag_builder
         @view_context = view_context
         @attributes = Attributes.deep_wrap_token_lists(attributes).with_indifferent_access
@@ -61,7 +61,7 @@ module ActionView
           value, override = @attributes[key], other[key]
 
           if value.is_a?(Hash) && override.is_a?(Hash)
-            Attributes.new(@tag_builder, @view_context, value).merge(override).to_hash
+            Attributes.new(@tag_builder, @view_context).merge(value).merge(override)
           elsif value.respond_to?(:merge)
             value.merge(override)
           else
@@ -69,15 +69,17 @@ module ActionView
           end
         end
 
-        Attributes.new(@tag_builder, @view_context, attributes)
+        Attributes.new(@tag_builder, @view_context, **attributes)
       end
       alias_method :+, :merge
       alias_method :|, :merge
       alias_method :call, :merge
       alias_method :deep_merge, :merge
 
-      def with_attributes(options = {}, &block)
-        @view_context.with_attributes(**merge(options), &block)
+      def with_attributes(*options, **overrides, &block)
+        attributes = [*options, overrides].reduce(self, :merge)
+
+        @view_context.with_attributes(attributes, &block)
       end
       alias_method :with_options, :with_attributes
 
@@ -86,16 +88,19 @@ module ActionView
       end
 
       def to_s
-        html_ready_attributes = @attributes.transform_values do |value|
+        @tag_builder.attributes(to_hash)
+      end
+
+      def to_hash
+        @attributes.deep_transform_values do |value|
           case value
           when Attributes then value.to_hash
-          when TokenList then value.to_a
+          when TokenList then value.to_s
           else value
           end
         end
-
-        @tag_builder.tag_options(html_ready_attributes).to_s.strip.html_safe
       end
+      alias_method :to_h, :to_hash
 
       def inspect
         "#<%<class>s:0x%<addr>08x attributes=%<attributes>s>" %

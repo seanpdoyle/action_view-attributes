@@ -35,3 +35,4 @@ jobs:
           bundler-cache: true
 
       - run: bin/rails test test/**/*_test.rb
+      - run: bin/rails standard

@@ -8,6 +8,9 @@ the version links.
 
 ## main
 
+* Introduce [standard](https://github.com/testdouble/standard) for style
+  violation linting
+
 * Enable chaining `#with_attributes` and `#tag` off of `Attributes` instances
   and instances of `AttributeMerger` returned by other `#with_attributes` calls
 

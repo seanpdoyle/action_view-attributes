@@ -22,7 +22,7 @@ module ActionView
       end
 
       def union(other)
-        TokenList.wrap(@tokens | Array(other).to_set)
+        TokenList.wrap(@tokens.union(Set[*other]))
       end
       alias_method :merge, :union
       alias_method :+, :union

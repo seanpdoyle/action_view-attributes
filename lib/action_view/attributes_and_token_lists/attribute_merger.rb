@@ -3,7 +3,7 @@ module ActionView
     class AttributeMerger < ActiveSupport::OptionMerger
       def initialize(view_context, context, options)
         @view_context = view_context
-        super context, @view_context.tag.attributes(options.to_hash.with_indifferent_access)
+        super context, @view_context.tag.attributes(options)
       end
 
       def with_attributes(options, &block)
@@ -17,7 +17,7 @@ module ActionView
       end
 
       def tag(name = nil, options = nil, open = false, escape = true)
-        if [name, options].all?(&:nil?)
+        if name.nil? && options.nil?
           AttributeMerger.new(@view_context, @view_context.tag, @options)
         else
           @view_context.tag(name, @options.merge(options.to_h))

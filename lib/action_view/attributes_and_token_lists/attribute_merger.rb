@@ -17,7 +17,7 @@ module ActionView
       end
 
       def tag(name = nil, options = nil, open = false, escape = true)
-        if [ name, options ].all?(&:nil?)
+        if [name, options].all?(&:nil?)
           AttributeMerger.new(@view_context, @view_context.tag, @options)
         else
           @view_context.tag(name, @options.merge(options.to_h))
@@ -34,7 +34,7 @@ module ActionView
 
       def inspect
         "#<%<class>s:0x%<addr>08x context=%<context>s>" %
-          { class: self.class, addr: object_id * 2, context: @context.inspect }
+          {class: self.class, addr: object_id * 2, context: @context.inspect}
       end
     end
   end

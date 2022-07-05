@@ -1,6 +1,6 @@
 module ActionView
   module AttributesAndTokenLists
-    class TokenList #:nodoc:
+    class TokenList # :nodoc:
       include Enumerable
 
       def self.wrap(value)
@@ -25,8 +25,8 @@ module ActionView
         TokenList.wrap(@tokens | Array(other).to_set)
       end
       alias_method :merge, :union
-      alias_method :+,     :union
-      alias_method :|,     :union
+      alias_method :+, :union
+      alias_method :|, :union
 
       def each(&block)
         @tokens.each(&block)

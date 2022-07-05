@@ -2,7 +2,7 @@ require "active_support/core_ext/hash/deep_transform_values"
 
 module ActionView
   module AttributesAndTokenLists
-    class Attributes #:nodoc:
+    class Attributes # :nodoc:
       delegate_missing_to :@attributes
 
       TOKEN_LIST_ATTRIBUTES = %i[
@@ -17,7 +17,7 @@ module ActionView
         aria-owns
         aria-dropeffect
         aria-relevant
-      ].flat_map { |key| [ key, key.to_s ] }.freeze
+      ].flat_map { |key| [key, key.to_s] }.freeze
       NESTED_TOKEN_LISTS_ATTRIBUTES = %i[
         action
         controller
@@ -28,7 +28,7 @@ module ActionView
         owns
         dropeffect
         relevant
-      ].flat_map { |key| [ key, key.to_s ] }.freeze
+      ].flat_map { |key| [key, key.to_s] }.freeze
 
       def self.deep_wrap_token_lists(attributes)
         attributes.deep_merge(attributes) do |attribute, value|
@@ -99,7 +99,7 @@ module ActionView
 
       def inspect
         "#<%<class>s:0x%<addr>08x attributes=%<attributes>s>" %
-          { class: self.class, addr: object_id * 2, attributes: @attributes.inspect }
+          {class: self.class, addr: object_id * 2, attributes: @attributes.inspect}
       end
     end
   end

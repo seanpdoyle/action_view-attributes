@@ -1,10 +1,10 @@
 # Changelog
 
-The noteworthy changes for each ActionView::AttributesAndTokenLists version are
+The noteworthy changes for each AttributesAndTokenLists version are
 included here. For a complete changelog, see the [commits] for each version via
 the version links.
 
-[commits]: https://github.com/seanpdoyle/action_view-attributes_and_token_lists
+[commits]: https://github.com/seanpdoyle/attributes_and_token_lists
 
 ## main
 

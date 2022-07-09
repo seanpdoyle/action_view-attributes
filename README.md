@@ -1,9 +1,4 @@
-# ActionView::AttributesAndTokenLists
-
-**Extracted from
-[rails/rails#41638](https://github.com/rails/rails/pull/41638)**
-
-⚠️ This is experimental ⚠️
+# AttributesAndTokenLists
 
 ---
 
@@ -161,7 +156,7 @@ I'm curious if transitioning Action View's `tag` and `content_tag` helpers from 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'action_view-attributes_and_token_lists'
+gem 'attributes_and_token_lists', github: "seanpdoyle/attributes_and_token_lists", branch: "main"
 ```
 
 And then execute:
@@ -171,7 +166,7 @@ $ bundle
 
 Or install it yourself as:
 ```bash
-$ gem install action_view-attributes_and_token_lists
+$ gem install attributes_and_token_lists
 ```
 
 ## Contributing

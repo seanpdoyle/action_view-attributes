@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-# Specify your gem's dependencies in action_view-attributes_and_token_lists.gemspec.
+# Specify your gem's dependencies in attributes_and_token_lists.gemspec.
 gemspec
 
 rails_version = ENV.fetch("RAILS_VERSION", "7.0")

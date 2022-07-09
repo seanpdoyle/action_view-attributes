@@ -1,7 +1,7 @@
 require "test_helper"
 
-class ActionView::Helpers::TagHelperTest < ActionView::TestCase
-  include ActionView::AttributesAndTokenLists::ApplicationHelper
+class AttributesAndTokenLists::ApplicationHelperTest < ActionView::TestCase
+  include AttributesAndTokenLists::ApplicationHelper
 
   test "token_list and class_names helper" do
     [:token_list, :class_names].each do |helper_method|
@@ -128,7 +128,7 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
 
     tokens = attributes[:class]
 
-    assert_kind_of ActionView::AttributesAndTokenLists::TokenList, tokens
+    assert_kind_of AttributesAndTokenLists::TokenList, tokens
     assert_equal %w[one two four], tokens.to_a
   end
 
@@ -137,7 +137,7 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
 
     tokens = attributes.dig(:aria, :labelledby)
 
-    assert_kind_of ActionView::AttributesAndTokenLists::TokenList, tokens
+    assert_kind_of AttributesAndTokenLists::TokenList, tokens
     assert_equal %w[one two], tokens.to_a
   end
 
@@ -146,7 +146,7 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
 
     tokens = attributes[:"aria-labelledby"]
 
-    assert_kind_of ActionView::AttributesAndTokenLists::TokenList, tokens
+    assert_kind_of AttributesAndTokenLists::TokenList, tokens
     assert_equal %w[one two], tokens.to_a
   end
 
@@ -155,7 +155,7 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
 
     tokens = attributes.dig(:aria, :describedby)
 
-    assert_kind_of ActionView::AttributesAndTokenLists::TokenList, tokens
+    assert_kind_of AttributesAndTokenLists::TokenList, tokens
     assert_equal %w[one two], tokens.to_a
   end
 
@@ -164,7 +164,7 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
 
     tokens = attributes[:"aria-describedby"]
 
-    assert_kind_of ActionView::AttributesAndTokenLists::TokenList, tokens
+    assert_kind_of AttributesAndTokenLists::TokenList, tokens
     assert_equal %w[one two], tokens.to_a
   end
 
@@ -173,7 +173,7 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
 
     tokens = attributes.dig(:data, :action)
 
-    assert_kind_of ActionView::AttributesAndTokenLists::TokenList, tokens
+    assert_kind_of AttributesAndTokenLists::TokenList, tokens
     assert_equal %w[one two], tokens.to_a
   end
 
@@ -182,7 +182,7 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
 
     tokens = attributes[:"data-action"]
 
-    assert_kind_of ActionView::AttributesAndTokenLists::TokenList, tokens
+    assert_kind_of AttributesAndTokenLists::TokenList, tokens
     assert_equal %w[one two], tokens.to_a
   end
 
@@ -191,7 +191,7 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
 
     tokens = attributes.dig(:data, :controller)
 
-    assert_kind_of ActionView::AttributesAndTokenLists::TokenList, tokens
+    assert_kind_of AttributesAndTokenLists::TokenList, tokens
     assert_equal %w[one two], tokens.to_a
   end
 
@@ -200,7 +200,7 @@ class ActionView::Helpers::TagHelperTest < ActionView::TestCase
 
     tokens = attributes[:"data-controller"]
 
-    assert_kind_of ActionView::AttributesAndTokenLists::TokenList, tokens
+    assert_kind_of AttributesAndTokenLists::TokenList, tokens
     assert_equal %w[one two], tokens.to_a
   end
 

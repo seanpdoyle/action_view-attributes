@@ -7,7 +7,7 @@ module ActionView
   module AttributesAndTokenLists
     module ApplicationHelper
       def token_list(*tokens)
-        TokenList.wrap(build_tag_values(*tokens))
+        TokenList.wrap(super(*tokens))
       end
       alias_method :class_names, :token_list
 

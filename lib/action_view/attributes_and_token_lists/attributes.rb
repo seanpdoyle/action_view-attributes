@@ -30,10 +30,10 @@ module ActionView
         relevant
       ].flat_map { |key| [key, key.to_s] }.freeze
 
-      def self.deep_wrap_token_lists(attributes)
+      def self.deep_wrap_token_lists(view_context, attributes)
         attributes.deep_merge(attributes) do |attribute, value|
           if attribute.in?(TOKEN_LIST_ATTRIBUTES | NESTED_TOKEN_LISTS_ATTRIBUTES)
-            ActionView::AttributesAndTokenLists::TokenList.wrap(ActionView::Helpers::TagHelper.build_tag_values(value))
+            view_context.token_list(value)
           else
             value
           end
@@ -43,7 +43,7 @@ module ActionView
       def initialize(tag_builder, view_context, **attributes)
         @tag_builder = tag_builder
         @view_context = view_context
-        @attributes = Attributes.deep_wrap_token_lists(attributes).with_indifferent_access
+        @attributes = Attributes.deep_wrap_token_lists(view_context, attributes).with_indifferent_access
       end
 
       def aria(**attributes)

@@ -29,9 +29,9 @@ class AttributesAndTokenLists::ApplicationHelperTest < ActionView::TestCase
   end
 
   test "token_list accepts TokenList instances" do
-    tokens = token_list("one two", token_list("three"))
+    tokens = token_list("click->controller#one click->controller#two", token_list("click->controller#three"))
 
-    assert_equal "one two three", tokens.to_s
+    assert_equal "click->controller#one click->controller#two click->controller#three", tokens.to_s
   end
 
   test "token_list merges TokenList instances" do
@@ -169,21 +169,31 @@ class AttributesAndTokenLists::ApplicationHelperTest < ActionView::TestCase
   end
 
   test "tag.attributes automatically wraps data: { action: ... } values as TokenList instances" do
-    attributes = tag.attributes data: {action: "one two"}
+    attributes = tag.attributes data: {action: "click->controller#one click->controller#two"}
 
     tokens = attributes.dig(:data, :action)
 
     assert_kind_of AttributesAndTokenLists::TokenList, tokens
-    assert_equal %w[one two], tokens.to_a
+    assert_equal %w[click->controller#one click->controller#two], tokens.to_a
   end
 
   test "tag.attributes automatically wraps data-action values as TokenList instances" do
-    attributes = tag.attributes "data-action": "one two"
+    attributes = tag.attributes "data-action": "click->controller#one click->controller#two"
 
     tokens = attributes[:"data-action"]
 
     assert_kind_of AttributesAndTokenLists::TokenList, tokens
-    assert_equal %w[one two], tokens.to_a
+    assert_equal %w[click->controller#one click->controller#two], tokens.to_a
+  end
+
+  test "tag.attributes deep merges data-action values" do
+    left = tag.attributes data: {action: "click->controller#one"}
+    right = tag.attributes data: {action: "click->controller#two"}
+
+    tokens = left.merge(right).dig(:data, :action)
+
+    assert_kind_of AttributesAndTokenLists::TokenList, tokens
+    assert_equal %w[click->controller#one click->controller#two], tokens.to_a
   end
 
   test "tag.attributes automatically wraps data: { controller: ... } values as TokenList instances" do

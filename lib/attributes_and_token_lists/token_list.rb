@@ -2,6 +2,10 @@ module AttributesAndTokenLists
   class TokenList # :nodoc:
     include Enumerable
 
+    def self.split(tokens)
+      tokens.to_s.split(/\s+/)
+    end
+
     def self.wrap(value)
       if value.is_a? TokenList
         value
@@ -12,12 +16,12 @@ module AttributesAndTokenLists
           else Array(value)
           end
 
-        new tokens.flat_map { |token| token.to_s.split(/\s+/) }.reject(&:blank?)
+        new tokens.flat_map { |token| split(token) }.reject(&:blank?)
       end
     end
 
     def initialize(tokens)
-      @tokens = Set.new(tokens)
+      @tokens = Set[*tokens]
     end
 
     def union(other)

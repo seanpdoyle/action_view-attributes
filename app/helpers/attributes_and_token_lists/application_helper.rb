@@ -6,7 +6,7 @@ require "attributes_and_token_lists/token_list"
 module AttributesAndTokenLists
   module ApplicationHelper
     def token_list(*tokens)
-      TokenList.wrap(super(*tokens))
+      TokenList.wrap(build_tag_values(*tokens))
     end
     alias_method :class_names, :token_list
 

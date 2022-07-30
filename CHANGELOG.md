@@ -20,3 +20,11 @@ the version links.
 
 * Add `Attributes#with_attributes` and `Attributes#with_options` alias to enable
   decorating and chaining
+
+* Support chaining view helpers off `Attributes` instances
+
+  ```ruby
+  styled = tag.attributes(class: "my-link-class")
+
+  styled.link_to("A link", "/")
+  ```

@@ -238,6 +238,18 @@ class AttributesAndTokenLists::ApplicationHelperTest < ActionView::TestCase
     assert_equal %(<form data-controller="one two three"></form>), attributes.tag.form
   end
 
+  test "tag.attributes instances can chain view helper calls" do
+    attributes = tag.attributes(class: "one two").merge(class: "three")
+
+    assert_equal %(<a class="one two three" href="/">styled</a>), attributes.link_to("styled", "/")
+  end
+
+  test "tag.attributes instances raises NoMethodError when chaining missing methods" do
+    assert_raises NoMethodError do
+      tag.attributes(class: "ignored").some_junk_method
+    end
+  end
+
   test "with_attributes can have options decorated onto it" do
     with_attributes class: "one two" do |styled|
       assert_equal %(<a class="one two" href="/">styled</a>), styled.link_to("styled", "/")

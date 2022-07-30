@@ -2,8 +2,6 @@ require "active_support/core_ext/hash/deep_transform_values"
 
 module AttributesAndTokenLists
   class Attributes # :nodoc:
-    delegate_missing_to :@attributes
-
     TOKEN_LIST_ATTRIBUTES = %i[
       class
       rel
@@ -100,6 +98,23 @@ module AttributesAndTokenLists
       end
     end
     alias_method :to_h, :to_hash
+
+    def method_missing(name, *arguments, **options, &block)
+      receiver =
+        if @attributes.respond_to?(name)
+          @attributes
+        elsif @view_context.respond_to?(name)
+          with_attributes
+        else
+          super
+        end
+
+      receiver.public_send(name, *arguments, **options, &block)
+    end
+
+    def respond_to_missing?(name, include_private = false)
+      @attributes.respond_to?(name) || @view_context.respond_to?(name)
+    end
 
     def inspect
       "#<%<class>s:0x%<addr>08x attributes=%<attributes>s>" %

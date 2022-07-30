@@ -88,7 +88,7 @@ module AttributesAndTokenLists
       @tag_builder.attributes(to_hash)
     end
 
-    def to_hash
+    def to_h
       @attributes.deep_transform_values do |value|
         case value
         when Attributes then value.to_hash
@@ -97,7 +97,10 @@ module AttributesAndTokenLists
         end
       end
     end
-    alias_method :to_h, :to_hash
+
+    def to_hash
+      to_h.deep_symbolize_keys
+    end
 
     def method_missing(name, *arguments, **options, &block)
       receiver =

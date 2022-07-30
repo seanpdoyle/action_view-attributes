@@ -28,3 +28,6 @@ the version links.
 
   styled.link_to("A link", "/")
   ```
+
+* Deep symbolize `Attributes` keys when splatting or calling
+  `Attributes#to_hash`

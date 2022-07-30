@@ -61,7 +61,7 @@ class AttributesAndTokenLists::ApplicationHelperTest < ActionView::TestCase
   test "tag.attributes can be splatted" do
     attributes = {id: 1, **tag.attributes(class: class_names("one"))}
 
-    assert_equal({:id => 1, "class" => class_names("one")}, attributes)
+    assert_equal({id: 1, class: class_names("one")}, attributes)
   end
 
   test "tag.attributes merges like a Hash of attributes" do

@@ -17,7 +17,7 @@ module AttributesAndTokenLists
 
     def tag(name = nil, options = nil, open = false, escape = true)
       if name.nil? && options.nil?
-        TagBuilder.new(@view_context, @view_context.tag, [@options])
+        AttributeMerger.new(@view_context, @view_context.tag, [@options])
       else
         @view_context.tag(name, @options.merge(options.to_h))
       end

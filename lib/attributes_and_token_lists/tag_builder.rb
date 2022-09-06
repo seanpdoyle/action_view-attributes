@@ -1,8 +1,11 @@
 module AttributesAndTokenLists
   class TagBuilder
-    def initialize(view_context, tag, attributes = [])
+    attr_reader :tag_name
+
+    def initialize(view_context, tag, tag_name, attributes = [])
       @view_context = view_context
       @tag = tag
+      @tag_name = tag_name
       @attributes = attributes.reduce(Attributes.new(view_context, tag), :merge)
     end
 
@@ -17,6 +20,10 @@ module AttributesAndTokenLists
 
     def with_attributes(*hashes, **overrides, &block)
       AttributeMerger.new(@view_context, self, [*hashes, overrides]).with_attributes(&block)
+    end
+
+    def to_s
+      @tag.public_send(@tag_name, **attributes)
     end
 
     def method_missing(name, content = nil, *arguments, escape: true, **options, &block)

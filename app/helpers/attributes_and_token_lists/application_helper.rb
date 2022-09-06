@@ -15,7 +15,7 @@ module AttributesAndTokenLists
         if value.is_a?(String)
           value
         else
-          AttributesAndTokenLists::TagBuilder.new(self, value)
+          AttributesAndTokenLists::TagBuilder.new(self, value, :div)
         end
       end
     end

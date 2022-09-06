@@ -15,6 +15,10 @@ end
 gem "rails", rails_constraint
 gem "sprockets-rails"
 gem "net-smtp"
+gem "capybara"
+gem "action_dispatch-testing-integration-capybara",
+  github: "thoughtbot/action_dispatch-testing-integration-capybara", tag: "v0.1.0",
+  require: "action_dispatch/testing/integration/capybara/minitest"
 
 group :development do
   gem "sqlite3"

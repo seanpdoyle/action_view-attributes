@@ -37,10 +37,15 @@ module AttributesAndTokenLists
       end
     end
 
-    def initialize(view_context, tag_builder, **attributes)
+    def initialize(view_context, tag_builder, tag_name = :div, **attributes)
       @view_context = view_context
       @tag_builder = tag_builder
       @attributes = Attributes.deep_wrap_token_lists(view_context, attributes).with_indifferent_access
+      @tag_name = tag_name
+    end
+
+    def as(tag_name)
+      Attributes.new(@view_context, @tag_builder, tag_name, **@attributes)
     end
 
     def aria(**attributes)
@@ -78,8 +83,14 @@ module AttributesAndTokenLists
     end
     alias_method :with_options, :with_attributes
 
-    def tag
-      TagBuilder.new(@view_context, @view_context.tag, [self])
+    def tag(content = nil, **overrides, &block)
+      builder = TagBuilder.new(@view_context, @tag_builder, @tag_name, [self])
+
+      if content.present? || block.present?
+        builder.public_send(builder.tag_name, content, **overrides, &block)
+      else
+        builder
+      end
     end
 
     def to_s

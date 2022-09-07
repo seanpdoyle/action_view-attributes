@@ -37,9 +37,9 @@ module AttributesAndTokenLists
       end
     end
 
-    def initialize(tag_builder, view_context, **attributes)
-      @tag_builder = tag_builder
+    def initialize(view_context, tag_builder, **attributes)
       @view_context = view_context
+      @tag_builder = tag_builder
       @attributes = Attributes.deep_wrap_token_lists(view_context, attributes).with_indifferent_access
     end
 
@@ -58,7 +58,7 @@ module AttributesAndTokenLists
         value, override = @attributes[key], other[key]
 
         if value.is_a?(Hash) && override.is_a?(Hash)
-          Attributes.new(@tag_builder, @view_context).merge(value).merge(override)
+          Attributes.new(@view_context, @tag_builder).merge(value).merge(override)
         elsif value.respond_to?(:merge)
           value.merge(override)
         else
@@ -66,7 +66,7 @@ module AttributesAndTokenLists
         end
       end
 
-      Attributes.new(@tag_builder, @view_context, **attributes)
+      Attributes.new(@view_context, @tag_builder, **attributes)
     end
     alias_method :call, :merge
     alias_method :deep_merge, :merge
@@ -79,7 +79,7 @@ module AttributesAndTokenLists
     alias_method :with_options, :with_attributes
 
     def tag
-      AttributeMerger.new(@view_context, @view_context.tag, self)
+      TagBuilder.new(@view_context, @view_context.tag, [self])
     end
 
     def to_s

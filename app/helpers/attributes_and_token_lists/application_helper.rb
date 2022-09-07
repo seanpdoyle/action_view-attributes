@@ -20,10 +20,6 @@ module AttributesAndTokenLists
       end
     end
 
-    def content_tag(...)
-      tag.public_send(...)
-    end
-
     # Inspired by `Object#with_options`, when the `with_attributes` helper
     # is called with a block,
     # it yields a block argument that merges options into a base set of
@@ -57,10 +53,8 @@ module AttributesAndTokenLists
     #   secondary.link_to "I have a blue border", "/"
     #   #=> <a class="border rounded-sm p-4 text-blue-500 border-blue-500" href="/">I have a blue border</a>
     #
-    def with_attributes(*options, **overrides, &block)
-      attributes = options.reduce({}, :merge)
-
-      AttributeMerger.new(self, self, attributes).with_attributes(**overrides, &block)
+    def with_attributes(*hashes, **overrides, &block)
+      AttributeMerger.new(self, self, [*hashes, overrides]).with_attributes(&block)
     end
   end
 end

@@ -2,12 +2,11 @@ module AttributesAndTokenLists
   class AttributeMerger < ActiveSupport::OptionMerger
     def initialize(view_context, context, options)
       @view_context = view_context
-      super context, @view_context.tag.attributes(options)
+      super context, @view_context.tag.attributes(*options)
     end
 
-    def with_attributes(*options, **overrides, &block)
-      attributes = [*options, overrides].reduce(@options, :merge)
-      attribute_merger = AttributeMerger.new @view_context, @context, attributes
+    def with_attributes(*hashes, **overrides, &block)
+      attribute_merger = AttributeMerger.new(@view_context, @context, [@options, *hashes, overrides])
 
       if block.nil?
         attribute_merger
@@ -18,7 +17,7 @@ module AttributesAndTokenLists
 
     def tag(name = nil, options = nil, open = false, escape = true)
       if name.nil? && options.nil?
-        AttributeMerger.new(@view_context, @view_context.tag, @options)
+        TagBuilder.new(@view_context, @view_context.tag, [@options])
       else
         @view_context.tag(name, @options.merge(options.to_h))
       end

@@ -116,13 +116,6 @@ class AttributesAndTokenLists::ApplicationHelperTest < ActionView::TestCase
     assert_equal %(data-controller="one two"), tag.attributes("data-controller" => "one").merge("data-controller": "two").to_s
   end
 
-  test "tag.attributes reverse merges Attributes" do
-    one = tag.attributes(class: "one")
-    two = tag.attributes(class: class_names("two"))
-
-    assert_equal %(class="one two"), (one + two).to_s
-  end
-
   test "tag.attributes deeply merges TokenList attributes" do
     attributes = tag.attributes(data: {controller: token_list("one")}).merge(data: {controller: token_list("two")})
 

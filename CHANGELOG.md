@@ -8,6 +8,9 @@ the version links.
 
 ## main
 
+* Remove support for `Attributes#+` and `Attributes#|` aliases for
+  `Attributes#merge`
+
 * Resolve `Attributes#merge` primitive value override bug
 
 * Decorate public interfaces instead of monkey-patching private ones

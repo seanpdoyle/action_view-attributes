@@ -68,8 +68,6 @@ module AttributesAndTokenLists
 
       Attributes.new(@tag_builder, @view_context, **attributes)
     end
-    alias_method :+, :merge
-    alias_method :|, :merge
     alias_method :call, :merge
     alias_method :deep_merge, :merge
 

@@ -76,6 +76,12 @@ class AttributesAndTokenLists::ApplicationHelperTest < ActionView::TestCase
     assert_equal %(id="1" class="one" hidden="hidden"), attributes.to_s
   end
 
+  test "tag.attributes merges variable arguments, with the last key-value pairs serving as overrides" do
+    attributes = tag.attributes({type: nil}, {type: "button"}, type: "reset")
+
+    assert_equal %(type="reset"), attributes.to_s
+  end
+
   test "tag.attributes merges variable arguments, with a final override" do
     left = tag.attributes(id: 1)
     right = tag.attributes(class: "one")

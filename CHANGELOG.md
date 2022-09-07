@@ -8,6 +8,8 @@ the version links.
 
 ## main
 
+* Resolve `Attributes#merge` primitive value override bug
+
 * Decorate public interfaces instead of monkey-patching private ones
 
 * Introduce [standard](https://github.com/testdouble/standard) for style

@@ -62,7 +62,7 @@ module AttributesAndTokenLists
         elsif value.respond_to?(:merge)
           value.merge(override)
         else
-          value
+          override
         end
       end
 

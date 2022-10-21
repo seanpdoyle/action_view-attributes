@@ -2,38 +2,30 @@ module AttributesAndTokenLists
   class AttributesBuilder
     class_attribute :tag_name, default: :div
 
-    def self.define(name, tag_name: self.tag_name, **defaults, &block)
+    def self.base(name, tag_name: self.tag_name, **defaults, &block)
       if block.present?
-        define_chainable_builder(name, tag_name, **defaults, &block)
+        builder_class = Class.new(self) do
+          self.tag_name = tag_name
+
+          block.arity.zero? ? instance_exec(&block) : yield_self(&block)
+        end
+
+        define_method name do |*variants|
+          base = builder_class.new(@view_context, **defaults)
+
+          values = variants.map { |variant| base.public_send(variant) }
+
+          builder_class.new(@view_context, **values.reduce(base, :merge))
+        end
       else
-        define_builder(name, tag_name, **defaults)
+        variant(name, tag_name: tag_name, **defaults)
       end
     end
 
-    def self.define_chainable_builder(name, tag_name, **defaults, &block)
-      builder_class = Class.new(self) do
-        self.tag_name = tag_name
-
-        block.arity.zero? ? instance_exec(&block) : yield_self(&block)
-      end
-
-      define_method name do |*variants|
-        base = builder_class.new(@view_context, **defaults)
-
-        values = variants.map { |variant| base.public_send(variant) }
-
-        builder_class.new(@view_context, **values.reduce(base, :merge))
-      end
-    end
-
-    def self.define_builder(name, tag_name, **defaults)
+    def self.variant(name, tag_name: self.tag_name, **defaults)
       define_method name do
         @attributes.merge(defaults).as(tag_name)
       end
-    end
-
-    class << self
-      alias_method :variant, :define
     end
 
     def initialize(view_context, **attributes)

@@ -5,11 +5,11 @@ require "attributes_and_token_lists/attributes_builder"
 module AttributesAndTokenLists
   mattr_accessor(:config) { ActiveSupport::OrderedOptions.new }
 
-  def self.define(name, &block)
-    builder = config.builders[name] = Class.new(AttributesBuilder)
+  def self.builder(name, &block)
+    instance = config.builders[name] = Class.new(AttributesBuilder)
 
     if block.present?
-      block.arity.zero? ? builder.instance_exec(&block) : builder.yield_self(&block)
+      block.arity.zero? ? instance.instance_exec(&block) : instance.yield_self(&block)
     end
   end
 

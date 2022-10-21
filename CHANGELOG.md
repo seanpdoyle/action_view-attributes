@@ -8,6 +8,24 @@ the version links.
 
 ## main
 
+* Rename builder domain-specific language to combine `builder`, `base`, and
+  `variant`:
+
+    ```ruby
+    ActiveSupport.on_load :attributes_and_token_lists do
+      builder :ui do
+        base :button, tag_name: "button", class: "cursor-pointer" do
+          variant :primary, class: "text-white bg-green-500"
+        end
+      end
+    end
+
+    # Elsewhere
+    ui.button.primary.tag "A button"
+    # => <button class="cursor-pointer text-white bg-green-500">A button</button>
+    ```
+
+
 * Alias `define` to `variant`, and add support for combining variants
 
     ```ruby

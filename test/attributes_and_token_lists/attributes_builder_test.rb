@@ -14,7 +14,7 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
 
   test "definitions yield the builder as an argument" do
     define_builder_helper_method :builder do |instance|
-      instance.define :rounded, class: "rounded-full"
+      instance.base :rounded, class: "rounded-full"
     end
 
     render inline: <<~ERB
@@ -26,7 +26,7 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
 
   test "definitions can omit the builder argument from the block" do
     define_builder_helper_method :builder do
-      define :rounded, class: "rounded-full"
+      base :rounded, class: "rounded-full"
     end
 
     render inline: <<~ERB
@@ -38,7 +38,7 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
 
   test "definitions can declare a default tag with the tag_name: option" do
     define_builder_helper_method :builder do
-      define :button, tag_name: :button, class: "rounded-full"
+      base :button, tag_name: :button, class: "rounded-full"
     end
 
     render inline: <<~ERB
@@ -51,8 +51,8 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
 
   test "definitions can define other variants" do
     define_builder_helper_method :builder do
-      define :button, tag_name: :button, class: "rounded-full" do
-        define :primary, class: "bg-green-500"
+      base :button, tag_name: :button, class: "rounded-full" do
+        variant :primary, class: "bg-green-500"
       end
     end
 
@@ -68,7 +68,7 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
 
   test "defined attributes can render with content" do
     define_builder_helper_method :builder do
-      define :button, tag_name: :button
+      base :button, tag_name: :button
     end
 
     render inline: <<~ERB
@@ -80,7 +80,7 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
 
   test "defined attributes can render without content" do
     define_builder_helper_method :builder do
-      define :submit, tag_name: :input, type: "submit"
+      base :submit, tag_name: :input, type: "submit"
     end
 
     render inline: <<~ERB
@@ -92,7 +92,7 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
 
   test "defined attributes can render with overrides" do
     define_builder_helper_method :builder do
-      define :button, tag_name: :button, type: "submit"
+      base :button, tag_name: :button, type: "submit"
     end
 
     render inline: <<~ERB
@@ -106,7 +106,7 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
 
   test "defined attributes can render as other tags" do
     define_builder_helper_method :builder do
-      define :button, tag_name: :button, class: "rounded-full"
+      base :button, tag_name: :button, class: "rounded-full"
     end
 
     render inline: <<~ERB
@@ -122,7 +122,7 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
 
   test "defined attributes splat into Action View helpers" do
     define_builder_helper_method :builder do
-      define :button, tag_name: :button, class: "rounded-full"
+      base :button, tag_name: :button, class: "rounded-full"
     end
 
     render inline: <<~ERB
@@ -141,7 +141,7 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
   end
 
   def define_builder_helper_method(name, &block)
-    AttributesAndTokenLists.define(name, &block)
+    AttributesAndTokenLists.builder(name, &block)
     view.extend(AttributesAndTokenLists.define_builder_helper_methods(Module.new))
   end
 end

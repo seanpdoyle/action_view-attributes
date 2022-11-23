@@ -17,8 +17,12 @@ module AttributesAndTokenLists
         block.arity.zero? ? instance_exec(&block) : yield_self(&block)
       end
 
-      define_method name do
-        builder_class.new(@view_context, **defaults)
+      define_method name do |*variants|
+        base = builder_class.new(@view_context, **defaults)
+
+        values = variants.map { |variant| base.public_send(variant) }
+
+        builder_class.new(@view_context, **values.reduce(base, :merge))
       end
     end
 
@@ -28,6 +32,10 @@ module AttributesAndTokenLists
       end
     end
 
+    class << self
+      alias_method :variant, :define
+    end
+
     def initialize(view_context, **attributes)
       @view_context = view_context
       @attributes = view_context.tag.attributes(attributes)
@@ -35,6 +43,10 @@ module AttributesAndTokenLists
 
     def tag(...)
       @attributes.as(tag_name).tag(...)
+    end
+
+    def merge(...)
+      AttributesBuilder.new(@view_context, **@attributes.merge(...))
     end
 
     def to_hash

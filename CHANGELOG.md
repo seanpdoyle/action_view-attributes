@@ -8,6 +8,26 @@ the version links.
 
 ## main
 
+* Alias `define` to `variant`, and add support for combining variants
+
+    ```ruby
+    ActiveSupport.on_load :attributes_and_token_lists do
+      define :ui do
+        define :button, tag_name: "button", class: "cursor-pointer" do
+          variant :primary, class: "text-white bg-green-500"
+          variant :rounded, class: "rounded-full"
+        end
+      end
+    end
+
+    # Elsewhere
+    ui.button(:primary, :rounded).tag "A button"
+    # => <button class="cursor-pointer text-white bg-green-500 rounded-full">A button</button>
+    ```
+
+* Move configuration out of `app/views/initializers` and into a more
+  conventional `config/initializers` file.
+
 * Pre-define clumps of attributes by calling `AttributesAndTokenLists.define` in
   a `config/initializers` file, or an
   `app/views/initializers/attributes_and_token_lists.html.erb` template

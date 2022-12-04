@@ -52,6 +52,12 @@ class AttributesAndTokenLists::ApplicationHelperTest < ActionView::TestCase
     assert_empty attributes.to_h
   end
 
+  test "tag.attributes with nil returns blank Attributes" do
+    attributes = tag.attributes(nil)
+
+    assert_empty attributes.to_h
+  end
+
   test "tag.attributes merges into TokenList attributes" do
     attributes = tag.attributes(class: class_names("one")).merge(class: "one two")
 

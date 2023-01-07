@@ -13,7 +13,7 @@ module AttributesAndTokenLists
         define_method name do |*variants|
           base = builder_class.new(@view_context, **defaults)
 
-          values = variants.map { |variant| base.public_send(variant) }
+          values = variants.compact.map { |variant| base.public_send(variant) }
 
           builder_class.new(@view_context, **values.reduce(base, :merge))
         end

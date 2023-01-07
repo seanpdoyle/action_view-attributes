@@ -8,6 +8,8 @@ the version links.
 
 ## main
 
+* Bug: gracefully resolve `nil` value when combining variants
+
 * Rename builder domain-specific language to combine `builder`, `base`, and
   `variant`:
 

@@ -66,6 +66,25 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
     assert_button "Primary", class: %w[rounded-full bg-green-500], count: 2
   end
 
+  test "variants can be combined" do
+    define_builder_helper_method :builder do
+      base :button, tag_name: :button do
+        variant :primary, class: "bg-green-500"
+        variant :rounded, class: "rounded-full"
+      end
+    end
+
+    render inline: <<~ERB
+      <%= builder.button(nil).tag "Base" %>
+      <%= builder.button(:primary).tag "Primary" %>
+      <%= builder.button(:primary, :rounded).button_tag "Primary Rounded" %>
+    ERB
+
+    assert_button "Base", class: %w[]
+    assert_button "Primary", exact: true, class: %w[bg-green-500], count: 1
+    assert_button "Primary Rounded", class: %w[bg-green-500 rounded-full], count: 1
+  end
+
   test "defined attributes can render with content" do
     define_builder_helper_method :builder do
       base :button, tag_name: :button

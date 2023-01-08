@@ -8,6 +8,9 @@ the version links.
 
 ## main
 
+* Bug: support attribute overrides for unclosed elements (for example,
+  `<input>`)
+
 * Bug: gracefully resolve `nil` value when combining variants
 
 * Rename builder domain-specific language to combine `builder`, `base`, and

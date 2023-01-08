@@ -86,7 +86,7 @@ module AttributesAndTokenLists
     def tag(content = nil, **overrides, &block)
       builder = TagBuilder.new(@view_context, @tag_builder, @tag_name, [self])
 
-      if content.present? || block.present?
+      if content.present? || overrides.present? || block.present?
         builder.public_send(builder.tag_name, content, **overrides, &block)
       else
         builder

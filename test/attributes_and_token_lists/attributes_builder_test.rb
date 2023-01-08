@@ -99,14 +99,21 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
 
   test "defined attributes can render without content" do
     define_builder_helper_method :builder do
-      base :submit, tag_name: :input, type: "submit"
+      base :input, tag_name: :input do
+        variant :text, type: "text"
+        variant :submit, type: "submit"
+      end
     end
 
     render inline: <<~ERB
-      <%= builder.submit.tag %>
+      <%= builder.input.tag value: "Default" %>
+      <%= builder.input.text.tag value: "Text" %>
+      <%= builder.input.submit.tag value: "Submit"%>
     ERB
 
-    assert_button type: "submit"
+    assert_field(with: "Default", exact: true, count: 1) { _1["type"].nil? }
+    assert_field(type: "text", with: "Text", count: 1)
+    assert_button("Submit", type: "submit", count: 1)
   end
 
   test "defined attributes can render with overrides" do

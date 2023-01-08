@@ -10,12 +10,8 @@ module AttributesAndTokenLists
           block.arity.zero? ? instance_exec(&block) : yield_self(&block)
         end
 
-        define_method name do |*variants|
-          base = builder_class.new(@view_context, **defaults)
-
-          values = variants.compact.map { |variant| base.public_send(variant) }
-
-          builder_class.new(@view_context, **values.reduce(base, :merge))
+        define_method name do
+          builder_class.new(@view_context, **defaults)
         end
       else
         variant(name, tag_name: tag_name, **defaults)
@@ -37,8 +33,16 @@ module AttributesAndTokenLists
       @attributes.as(tag_name).tag(...)
     end
 
+    def [](*variants)
+      values = Array(variants).flatten.compact
+
+      attributes = values.map(&method(:public_send)).reduce(self, :merge)
+
+      self.class.new(@view_context, **attributes)
+    end
+
     def merge(...)
-      AttributesBuilder.new(@view_context, **@attributes.merge(...))
+      self.class.new(@view_context, **@attributes.merge(...))
     end
 
     def to_hash

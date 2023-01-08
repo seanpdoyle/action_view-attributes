@@ -75,14 +75,16 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
     end
 
     render inline: <<~ERB
-      <%= builder.button(nil).tag "Base" %>
-      <%= builder.button(:primary).tag "Primary" %>
-      <%= builder.button(:primary, :rounded).button_tag "Primary Rounded" %>
+      <%= builder.button[nil].tag "Base" %>
+      <%= builder.button[:primary].tag "Primary" %>
+      <%= builder.button[:primary, :rounded].button_tag "Primary Rounded" %>
+      <%= builder.button[[:primary, :rounded]].button_tag "Primary Rounded Array" %>
     ERB
 
     assert_button "Base", class: %w[]
     assert_button "Primary", exact: true, class: %w[bg-green-500], count: 1
-    assert_button "Primary Rounded", class: %w[bg-green-500 rounded-full], count: 1
+    assert_button "Primary Rounded", exact: true, class: %w[bg-green-500 rounded-full], count: 1
+    assert_button "Primary Rounded Array", exact: true, class: %w[bg-green-500 rounded-full], count: 1
   end
 
   test "defined attributes can render with content" do

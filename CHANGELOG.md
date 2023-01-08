@@ -8,6 +8,21 @@ the version links.
 
 ## main
 
+* Change: combine variants with `#[]`
+
+    ```ruby
+    define :button, tag_name: "button", class: "cursor-pointer" do
+      variant :primary, class: "text-white bg-green-500"
+      variant :rounded, class: "rounded-full"
+    end
+
+    # before
+    ui.button(:primary, :rounded).tag "A button"
+
+    # after
+    ui.button[:primary, :rounded].tag "A button"
+    ```
+
 * Bug: support attribute overrides for unclosed elements (for example,
   `<input>`)
 

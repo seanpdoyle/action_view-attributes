@@ -10,7 +10,7 @@ class AttributesBuilderTest < ActionDispatch::IntegrationTest
       <%= view_initializer.button.tertiary.tag "Tertiary" %>
       <%= view_initializer.button.primary.tag.a "Primary", href: "#" %>
       <%= view_initializer.button.primary.link_to "Primary", "#" %>
-      <%= view_initializer.button(:primary, :secondary, :tertiary).tag "All" %>
+      <%= view_initializer.button[:primary, :secondary, :tertiary].tag "All" %>
     ERB
 
     assert_button "Unstyled", class: %w[]
@@ -31,7 +31,7 @@ class AttributesBuilderTest < ActionDispatch::IntegrationTest
       <%= initializer.button.tertiary.tag "Tertiary" %>
       <%= initializer.button.primary.tag.a "Primary", href: "#" %>
       <%= initializer.button.primary.link_to "Primary", "#" %>
-      <%= initializer.button(:primary, :secondary, :tertiary).tag "All" %>
+      <%= initializer.button[:primary, :secondary, :tertiary].tag "All" %>
     ERB
 
     assert_button "Unstyled", class: %w[]

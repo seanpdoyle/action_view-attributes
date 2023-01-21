@@ -8,6 +8,8 @@ the version links.
 
 ## main
 
+* Inline `ActiveSupport::OptionMerger` into `AttributesAndTokenLists::AttributeMerger` to handle `AttributesAndTokenLists::Attributes` instances
+
 * Change: combine variants with `#[]`
 
     ```ruby

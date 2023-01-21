@@ -19,4 +19,9 @@ module AttributesAndTokenLists::FormBuilderExtensions
   def with_attributes(*hashes, **overrides, &block)
     AttributesAndTokenLists::AttributeMerger.new(@template, self, [*hashes, overrides]).with_attributes(&block)
   end
+  alias_method :with_options, :with_attributes
+end
+
+ActiveSupport.on_load :action_view do
+  ActionView::Helpers::FormBuilder.include AttributesAndTokenLists::FormBuilderExtensions
 end

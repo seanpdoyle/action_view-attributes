@@ -38,8 +38,8 @@ module AttributesAndTokenLists
       @tag.public_send(name, content, escape: escape, **attributes(*arguments, **options), &block)
     end
 
-    def respond_to_missing?(name, include_private = false)
-      @tag.respond_to_missing?(name, include_private)
+    def respond_to_missing?(*arguments)
+      true
     end
   end
 end

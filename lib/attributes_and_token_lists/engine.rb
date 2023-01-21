@@ -6,10 +6,6 @@ module AttributesAndTokenLists
     config.attributes_and_token_lists = ActiveSupport::OrderedOptions.new
     config.attributes_and_token_lists.builders = {}
 
-    ActiveSupport.on_load :action_view do
-      ActionView::Helpers::FormBuilder.include AttributesAndTokenLists::FormBuilderExtensions
-    end
-
     config.to_prepare do
       if ::ActionView::VERSION::MAJOR == 6
         ActionView::Helpers::TagHelper::TagBuilder.include AttributesAndTokenLists::Backports

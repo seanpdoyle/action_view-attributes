@@ -8,6 +8,8 @@ the version links.
 
 ## main
 
+## 0.2.0 (Jan 21, 2023)
+
 * Add `#with_attributes` support to Action View's collection helpers (like [collection_check_boxes][]) in the same style as `FormBuilder#with_attributes`
 
   ```ruby
@@ -37,6 +39,8 @@ the version links.
     # after
     ui.button[:primary, :rounded].tag "A button"
     ```
+
+## 0.1.0 (Jan 21, 2023)
 
 * Bug: support attribute overrides for unclosed elements (for example,
   `<input>`)

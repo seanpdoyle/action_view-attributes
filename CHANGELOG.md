@@ -8,6 +8,19 @@ the version links.
 
 ## main
 
+* Add `#with_attributes` support to Action View's collection helpers (like [collection_check_boxes][]) in the same style as `FormBuilder#with_attributes`
+
+  ```ruby
+  collection_check_boxes :record, :choice, ["a", "b"], :to_s, :to_s do |builder|
+    builder.with_attributes class: "font-bold" do |styled|
+      styled.check_box
+      #=> <input class="font-bold" type="checkbox" value="a" name="record[choice][]" id="record_choice_a" />
+    end
+  end
+  ```
+
+  [collection_check_boxes]: https://edgeapi.rubyonrails.org/classes/ActionView/Helpers/FormOptionsHelper.html#method-i-collection_check_boxes
+
 * Inline `ActiveSupport::OptionMerger` into `AttributesAndTokenLists::AttributeMerger` to handle `AttributesAndTokenLists::Attributes` instances
 
 * Change: combine variants with `#[]`

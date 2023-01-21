@@ -65,6 +65,38 @@ class HelpersTest < ActionDispatch::IntegrationTest
     HTML
   end
 
+  test "extends collection Builder instances with_attributes (block)" do
+    post examples_path, params: {template: <<~ERB}
+      <%= collection_check_boxes :record, :choice, ["a"], :to_s, :to_s, {include_hidden: false}, class: "default" do |builder| %>
+        <% builder.with_attributes class: "override" do |special_builder| %>
+          <%= special_builder.check_box %>
+        <% end %>
+        <% builder.with_options class: "override" do |special_builder| %>
+          <%= special_builder.check_box %>
+        <% end %>
+      <% end %>
+    ERB
+
+    assert_html_equal <<~HTML, response.body
+      <input class="default override" type="checkbox" value="a" name="record[choice][]" id="record_choice_a" />
+      <input class="default override" type="checkbox" value="a" name="record[choice][]" id="record_choice_a" />
+    HTML
+  end
+
+  test "extends collection Builder instances with_attributes (instance)" do
+    post examples_path, params: {template: <<~ERB}
+      <%= collection_check_boxes :record, :choice, ["a"], :to_s, :to_s, {include_hidden: false}, class: "default" do |builder| %>
+        <%= builder.with_attributes(class: "override").check_box %>
+        <%= builder.with_options(class: "override").check_box %>
+      <% end %>
+    ERB
+
+    assert_html_equal <<~HTML, response.body
+      <input class="default override" type="checkbox" value="a" name="record[choice][]" id="record_choice_a" />
+      <input class="default override" type="checkbox" value="a" name="record[choice][]" id="record_choice_a" />
+    HTML
+  end
+
   def assert_html_equal(expected, actual, *rest)
     assert_equal expected.squish, actual.squish, *rest
   end

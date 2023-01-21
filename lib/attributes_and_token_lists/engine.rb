@@ -1,4 +1,5 @@
 require "attributes_and_token_lists/backports"
+require "attributes_and_token_lists/collection_builder_extensions"
 require "attributes_and_token_lists/form_builder_extensions"
 
 module AttributesAndTokenLists

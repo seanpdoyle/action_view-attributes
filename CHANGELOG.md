@@ -8,6 +8,8 @@ the version links.
 
 ## main
 
+## 0.2.1 (Jan 22, 2023)
+
 * REVERT: Inline `ActiveSupport::OptionMerger` into `AttributesAndTokenLists::AttributeMerger` to handle `AttributesAndTokenLists::Attributes` instances
 
 * REVERT: Add `#with_attributes` support to Action View's collection helpers (like [collection_check_boxes][]) in the same style as `FormBuilder#with_attributes`

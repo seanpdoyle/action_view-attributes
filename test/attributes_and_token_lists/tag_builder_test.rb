@@ -1,7 +1,7 @@
 require "test_helper"
 require "capybara/minitest"
 
-class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
+class AttributesAndTokenLists::TagBuilderTest < ActionView::TestCase
   include Capybara::Minitest::Assertions
 
   test "AttributesAndTokenLists.define declares helper" do
@@ -66,7 +66,7 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
     assert_button "Primary", class: %w[rounded-full bg-green-500], count: 2
   end
 
-  test "variants can be combined" do
+  test "variants can be combined by calls to #with" do
     define_builder_helper_method :builder do
       base :button, tag_name: :button do
         variant :primary, class: "bg-green-500"
@@ -75,10 +75,10 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
     end
 
     render inline: <<~ERB
-      <%= builder.button[nil].tag "Base" %>
-      <%= builder.button[:primary].tag "Primary" %>
-      <%= builder.button[:primary, :rounded].button_tag "Primary Rounded" %>
-      <%= builder.button[[:primary, :rounded]].button_tag "Primary Rounded Array" %>
+      <%= builder.button.with(nil).tag "Base" %>
+      <%= builder.button.with(:primary).tag "Primary" %>
+      <%= builder.button.with(:primary, :rounded).button_tag "Primary Rounded" %>
+      <%= builder.button.with([:primary, :rounded]).button_tag "Primary Rounded Array" %>
     ERB
 
     assert_button "Base", class: %w[]
@@ -155,13 +155,60 @@ class AttributesAndTokenLists::AttributesBuilderTest < ActionView::TestCase
 
     render inline: <<~ERB
       <%= form_with scope: :post, url: "/" do |form| %>
-        <%= form.button "Submit", builder.button.(class: "btn") %>
+        <%= form.button "As Options", builder.button %>
+        <%= form.button "Chained Call", builder.button.(class: "btn") %>
       <% end %>
     ERB
 
     assert_css "form" do
-      assert_button "Submit", class: %w[rounded-full btn], type: "submit"
+      assert_button "As Options", class: %(rounded-full), type: "submit", count: 1
+      assert_button "Chained Call", class: %(rounded-full btn), type: "submit", count: 1
     end
+  end
+
+  test "AttributesAndTokenLists::ApplicationHelper#with_attributes accepts a TagBuilder instance" do
+    define_builder_helper_method :builder do
+      base :button, tag_name: :button, class: "rounded-full"
+    end
+
+    render inline: <<~ERB
+      <% with_attributes builder.button, class: "btn" do |styled| %>
+        <%= styled.button_tag "Submit" %>
+      <% end %>
+    ERB
+
+    assert_button "Submit", class: %w[rounded-full btn], type: "submit"
+  end
+
+  test "AttributesAndTokenLists::ApplicationHelper#to_s delegates to ActionView::Attributes" do
+    define_builder_helper_method :builder do
+      base :button, tag_name: :button, class: "rounded-full"
+    end
+
+    rendered = render inline: "<%= builder.button %>"
+
+    assert_equal %(class="rounded-full"), rendered
+  end
+
+  test "cannot name a variant after an existing method" do
+    collision = :with
+
+    exception = assert_raises do
+      define_builder_helper_method(:builder) { base collision }
+    end
+
+    assert_includes exception.message, %(Cannot define "#{collision}", it's already defined)
+  end
+
+  test "cannot name a base after an existing method" do
+    collision = :with
+    exception = assert_raises do
+      define_builder_helper_method :builder do
+        base(:button) { variant collision }
+      end
+    end
+
+    assert_includes exception.message, %(Cannot define "#{collision}", it's already defined)
   end
 
   def page

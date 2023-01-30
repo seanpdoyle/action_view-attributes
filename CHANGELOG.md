@@ -8,6 +8,18 @@ the version links.
 
 ## main
 
+* Replace `AttributesAndTokenLists::Attributes` with `ActionView::Attributes` to
+  make it more `Hash`-like.
+
+  Replace `AttributesAndTokenLists::TagBuilder#[]` with `#with` so that it can
+  be more `Hash`-like
+
+  Remove `AttributesAndTokenLists::TokenList` and
+  `AttributesAndTokenLists::AttributeMerger` and rely on
+  `ActionView::Helpers::TagHelper#token_list` and `with_options` instead.
+
+  *Sean Doyle*
+
 ## 0.2.1 (Jan 22, 2023)
 
 * REVERT: Inline `ActiveSupport::OptionMerger` into `AttributesAndTokenLists::AttributeMerger` to handle `AttributesAndTokenLists::Attributes` instances

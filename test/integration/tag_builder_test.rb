@@ -1,16 +1,16 @@
 require "test_helper"
 
-class AttributesBuilderTest < ActionDispatch::IntegrationTest
+class TagBuilderTest < ActionDispatch::IntegrationTest
   test "reads configuration from app/views/initializers" do
     post examples_path, params: {template: <<~ERB}
       <%= view_initializer.tag.button "Unstyled" %>
       <%= view_initializer.button.tag "Base" %>
-      <%= view_initializer.button.primary.tag "Primary" %>
-      <%= view_initializer.button.secondary.tag "Secondary" %>
-      <%= view_initializer.button.tertiary.tag "Tertiary" %>
-      <%= view_initializer.button.primary.tag.a "Primary", href: "#" %>
+      <%= view_initializer.button.primary "Primary" %>
+      <%= view_initializer.button.secondary "Secondary" %>
+      <%= view_initializer.button.tertiary "Tertiary" %>
+      <%= view_initializer.button.primary.a "Primary", href: "#" %>
       <%= view_initializer.button.primary.link_to "Primary", "#" %>
-      <%= view_initializer.button[:primary, :secondary, :tertiary].tag "All" %>
+      <%= view_initializer.button.with(:primary, :secondary, :tertiary).tag "All" %>
     ERB
 
     assert_button "Unstyled", class: %w[]
@@ -26,12 +26,12 @@ class AttributesBuilderTest < ActionDispatch::IntegrationTest
     post examples_path, params: {template: <<~ERB}
       <%= initializer.tag.button "Unstyled" %>
       <%= initializer.button.tag "Base" %>
-      <%= initializer.button.primary.tag "Primary" %>
-      <%= initializer.button.secondary.tag "Secondary" %>
-      <%= initializer.button.tertiary.tag "Tertiary" %>
-      <%= initializer.button.primary.tag.a "Primary", href: "#" %>
+      <%= initializer.button.primary "Primary" %>
+      <%= initializer.button.secondary "Secondary" %>
+      <%= initializer.button.tertiary "Tertiary" %>
+      <%= initializer.button.primary.a "Primary", href: "#" %>
       <%= initializer.button.primary.link_to "Primary", "#" %>
-      <%= initializer.button[:primary, :secondary, :tertiary].tag "All" %>
+      <%= initializer.button.with(:primary, :secondary, :tertiary).tag "All" %>
     ERB
 
     assert_button "Unstyled", class: %w[]

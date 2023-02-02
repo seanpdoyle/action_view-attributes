@@ -69,7 +69,10 @@ class AttributesAndTokenLists::TagBuilderTest < ActionView::TestCase
   test "variants can be combined by calls to #with" do
     define_builder_helper_method :builder do
       base :button, tag_name: :button do
-        variant :primary, class: "bg-green-500"
+        variant style: {
+          primary: {class: "bg-green-500"},
+          secondary: {class: "bg-red-500"}
+        }
         variant :rounded, class: "rounded-full"
       end
     end
@@ -77,14 +80,18 @@ class AttributesAndTokenLists::TagBuilderTest < ActionView::TestCase
     render inline: <<~ERB
       <%= builder.button.with(nil).tag "Base" %>
       <%= builder.button.with(:primary).tag "Primary" %>
+      <%= builder.button.with(:secondary).tag "Primary" %>
       <%= builder.button.with(:primary, :rounded).button_tag "Primary Rounded" %>
       <%= builder.button.with([:primary, :rounded]).button_tag "Primary Rounded Array" %>
+      <%= builder.button.with(:rounded, style: :secondary).button_tag "Rounded Secondary Hash" %>
     ERB
 
     assert_button "Base", class: %w[]
     assert_button "Primary", exact: true, class: %w[bg-green-500], count: 1
+    assert_button "Secondary", exact: true, class: %w[bg-red-500], count: 1
     assert_button "Primary Rounded", exact: true, class: %w[bg-green-500 rounded-full], count: 1
     assert_button "Primary Rounded Array", exact: true, class: %w[bg-green-500 rounded-full], count: 1
+    assert_button "Rounded Secondary Hash", exact: true, class: %w[bg-red-500 rounded-full], count: 1
   end
 
   test "defined attributes can render with content" do

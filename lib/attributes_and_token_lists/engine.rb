@@ -44,10 +44,6 @@ module AttributesAndTokenLists
     config.to_prepare do
       AttributesAndTokenLists.config = ::Rails.configuration.attributes_and_token_lists
 
-      begin
-        ApplicationController.renderer.render(template: "initializers/attributes_and_token_lists")
-      rescue ActionView::MissingTemplate
-      end
       ActiveSupport.run_load_hooks :attributes_and_token_lists, AttributesAndTokenLists
 
       AttributesAndTokenLists.define_builder_helper_methods(ActionView::Base)

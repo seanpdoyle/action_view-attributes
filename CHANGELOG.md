@@ -8,6 +8,11 @@ the version links.
 
 ## main
 
+* Drop support for loading `AttributesAndTokenLists.builder` calls from
+  `app/views/initializers`.
+
+  *Sean Doyle*
+
 * Replace `AttributesAndTokenLists::Attributes` with `ActionView::Attributes` to
   make it more `Hash`-like.
 

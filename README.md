@@ -4,7 +4,7 @@ Transform `Hash` arguments into composable groups of HTML attributes
 
 ---
 
-## Usage
+## `ActionView::Attributes`
 
 ### `tag.attributes`
 
@@ -131,6 +131,105 @@ builder.a "A link", href: "/a-link"
 
 builder.button_tag "A button", type: "button"
 # => <button class="border rounded-full p-4 focus:outline-none focus:ring" type="button">A button</button>
+```
+
+## Attribute Variants
+
+Define your Attribute variations
+
+```ruby
+attribute_helpers :ui do |ui|
+  focusable = "ring-current focus:outline-none focus:ring"
+
+  ui.variant :link, class: ["ring-inset", focusable]
+
+  ui.variant :label, class: "text-sm" do |label|
+    label.variant :interactive, class: ["cursor-pointer peer-focus:ring", focusable]
+  end
+
+  ui.variant :input class: focusable do |input|
+    placeholder = "placeholder:text-current placeholder:text-opacity-95 before:text-opacity-95"
+
+    input.variant :type, {
+      text: {class: [placeholder, "border-black/20 text-sm"]},
+      textarea: {class: ["min-h-fit border-0 text-sm bg-white", placeholder]},
+      select: {class: ["inline-flex items-center gap-4 font-medium leading-tight border-0 shadow-md p-4", placeholder]}
+    }
+  end
+
+  ui.variant :button, class: [focusable, "inline-flex items-center justify-center disabled:cursor-none"] do |button|
+    button.variants(
+      style: {
+        primary: {class: "bg-purple-900 text-white ring-purple-900 focus:ring-offset-2"},
+        secondary: {class: "bg-purple-900/5 text-purple-900/95"},
+        tertiary: {class: "bg-white text-purple-900 border border-current/20 hover:bg-opacity-20 aria-expanded:bg-opacity-30"}
+      },
+      size: {
+        small: "text-sm p-1",
+        medium: "text-md p-2"
+        large: "text-lg p-4"
+      }
+    )
+  end
+end
+```
+
+From your view templates, pass them as arguments, or invoke view helper methods:
+
+```ruby
+ui.link.link_to "A page", "/page"
+# => <a class="ring-inset ring-current focus:outline-none focus:ring" href="/page">A page</a>
+
+ui.button.with(style: :primary, size: :large).button_tag "Click Me!", type: :button
+# => <button type="button"
+# =>         class="ring-current focus:outline-none focus:ring
+# =>                inline-flex items-center justify-center disabled:cursor-none bg-purple-900 text-white ring-purple-900 focus:ring-offset-2 text-lg p-4">
+# =>   Click Me!
+# => </button>
+```
+
+If variant names are unique across keys, you can pass them directly to `#with`:
+
+```ruby
+ui.button.with(:primary, :large).button_tag "Click Me!", type: :button
+# => <button type="button"
+# =>         class="ring-current focus:outline-none focus:ring
+# =>                inline-flex items-center justify-center disabled:cursor-none bg-purple-900 text-white ring-purple-900 focus:ring-offset-2 text-lg p-4">
+# =>   Click Me!
+# => </button>
+```
+
+You can mix-and-match variant arguments:
+
+```ruby
+ui.button.with(:primary, size: :large).link_to "Click Me!", "/"
+# => <a href="/"
+# =>    class="ring-current focus:outline-none focus:ring
+# =>           inline-flex items-center justify-center disabled:cursor-none bg-purple-900 text-white ring-purple-900 focus:ring-offset-2 text-lg p-4">
+# =>   Click Me!
+# => </a>
+```
+
+When invoking a single variant, you can forego calls to `#with` and invoke the name of the variant directly:
+
+```ruby
+ui.button.primary.button_tag "Click Me!"
+# => <button class="ring-current focus:outline-none focus:ring
+# =>                inline-flex items-center justify-center disabled:cursor-none bg-purple-900 text-white ring-purple-900 focus:ring-offset-2">
+# =>   Click Me!
+# => </button>
+```
+
+Attribute Variants are `Hash`-like, and respond to `#[]`, `#merge`, `#to_h`, `#to_hash`, and can be double-splatted with `**`.
+
+They're also valid `Object#with_options` arguments:
+
+```ruby
+form.with_options(ui.input.text).text_field :name
+# => <input id="article_name" name="article[name]" type="text"
+# =>       class="placeholder:text-current placeholder:text-opacity-95 before:text-opacity-95
+# =>              ring-current focus:outline-none focus:ring
+# =>              border-black/20 text-sm">
 ```
 
 ## Installation

@@ -5,7 +5,7 @@ require "attributes_and_token_lists/tag_builder"
 module AttributesAndTokenLists
   mattr_accessor(:config) { ActiveSupport::OrderedOptions.new }
 
-  def self.builder(name, &block)
+  def self.tag_builder(name, &block)
     instance = config.builders[name] = Class.new(TagBuilder)
 
     if block.present?

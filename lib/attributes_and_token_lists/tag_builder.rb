@@ -1,6 +1,7 @@
 module AttributesAndTokenLists
   class TagBuilder
     class_attribute :tag_name, instance_accessor: false, default: :div
+    class_attribute :variants, instance_accessor: false, default: -> { {} }
 
     def self.base(name, tag_name: self.tag_name, **defaults, &block)
       if block.present?
@@ -22,6 +23,10 @@ module AttributesAndTokenLists
       else
         variant(name, tag_name: tag_name, **defaults)
       end
+    end
+
+    def self.builder(...)
+      base(...)
     end
 
     def self.variant(name, tag_name: self.tag_name, **defaults)

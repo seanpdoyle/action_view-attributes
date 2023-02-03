@@ -1,25 +1,16 @@
 require "attributes_and_token_lists/version"
 require "attributes_and_token_lists/engine"
-require "attributes_and_token_lists/tag_builder"
+require "attributes_and_token_lists/configuration"
+require "attributes_and_token_lists/builder"
 
 module AttributesAndTokenLists
-  mattr_accessor(:config) { ActiveSupport::OrderedOptions.new }
+  mattr_accessor :builders, default: {}
 
-  def self.tag_builder(name, &block)
-    instance = config.builders[name] = Class.new(TagBuilder)
+  def self.html_attributes(name, view_context = Module.new, &block)
+    builders[name] = Configuration.new(name, &block)
 
-    if block.present?
-      block.arity.zero? ? instance.instance_exec(&block) : instance.yield_self(&block)
-    end
-  end
+    view_context.define_method(name) { Builder.new(builders[name], self) }
 
-  def self.define_builder_helper_methods(helpers)
-    config.builders.each do |name, builder|
-      helpers.define_method name do
-        builder.new(self)
-      end
-    end
-
-    helpers
+    view_context
   end
 end

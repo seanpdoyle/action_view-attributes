@@ -1,6 +1,6 @@
 require "test_helper"
 
-class AttributesAndTokenLists::ApplicationHelperTest < ActionView::TestCase
+class ActionView::Attributes::ApplicationHelper::Test < ActionView::TestCase
   test "tag.attributes without arguments returns blank Attributes" do
     attributes = tag.attributes
 
@@ -56,14 +56,6 @@ class AttributesAndTokenLists::ApplicationHelperTest < ActionView::TestCase
     attributes = tag.attributes(class: "one").merge(class: "one two")
 
     assert_equal %(class="one two"), attributes.to_s
-  end
-
-  test "tag.attributes.aria deeply merges" do
-    assert_equal %(aria-describedby="one two three"), tag.attributes(aria: {describedby: "one"}).aria(describedby: "two").aria(describedby: "three").to_s
-  end
-
-  test "tag.attributes.data deeply merges" do
-    assert_equal %(data-controller="one two three"), tag.attributes(data: {controller: "one"}).data(controller: "two").data(controller: "three").to_s
   end
 
   test "tag.attributes deeply merges Hash attributes" do

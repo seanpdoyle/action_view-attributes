@@ -1,6 +1,6 @@
 require "active_support/core_ext/object/with_options"
 
-module AttributesAndTokenLists::ObjectBackports
+module ActionView::Attributes::WithOptionsBackport
   extend ActiveSupport::Concern
 
   included do

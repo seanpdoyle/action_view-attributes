@@ -1,4 +1,4 @@
-module AttributesAndTokenLists::ApplicationHelper
+module ActionView::Attributes::ApplicationHelper
   # Inspired by `Object#with_options`, when the `with_attributes` helper
   # is called with a block,
   # it yields a block argument that merges options into a base set of

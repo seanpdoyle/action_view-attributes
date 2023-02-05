@@ -130,26 +130,3 @@ builder.a "A link", href: "/a-link"
 builder.button_tag "A button", type: "button"
 # => <button class="border rounded-full p-4 focus:outline-none focus:ring" type="button">A button</button>
 ```
-
-## Installation
-Add this line to your application's Gemfile:
-
-```ruby
-gem "action_view-attributes", github: "seanpdoyle/action_view-attributes", tag: "v0.1.0"
-```
-
-And then execute:
-```bash
-$ bundle
-```
-
-Or install it yourself as:
-```bash
-$ gem install action_view-attributes
-```
-
-## Contributing
-Contribution directions go here.
-
-## License
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

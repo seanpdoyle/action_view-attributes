@@ -44,10 +44,10 @@ class HelpersTest < ActionDispatch::IntegrationTest
   test "extends collection Builder#with_options accepts tag.attributes (block)" do
     post examples_path, params: {template: <<~ERB}
       <%= collection_check_boxes :record, :choice, ["a"], :to_s, :to_s, {include_hidden: false} do |builder| %>
-          <% builder.with_options tag.attributes(class: "default") do |special_builder| %>
-            <%= special_builder.check_box class: "override" %>
-          <% end %>
+        <% builder.with_options tag.attributes(class: "default") do |special_builder| %>
+          <%= special_builder.check_box class: "override" %>
         <% end %>
+      <% end %>
     ERB
 
     assert_html_equal <<~HTML, response.body

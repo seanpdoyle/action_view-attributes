@@ -1,10 +1,8 @@
-require "attributes_and_token_lists/helper"
-
 module AttributesAndTokenLists
   class Engine < ::Rails::Engine
     initializer "attributes_and_token_lists.core_ext" do
       if Rails.version < "7.0"
-        require "attributes_and_token_lists/object_backports"
+        Object.include AttributesAndTokenLists::ObjectBackports
       end
     end
 

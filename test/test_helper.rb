@@ -14,10 +14,6 @@ if ActiveSupport::TestCase.respond_to?(:fixture_path=)
   ActiveSupport::TestCase.fixtures :all
 end
 
-ActiveSupport::TestCase.teardown do
-  AttributesAndTokenLists.builders.clear
-end
-
 class ActionView::TestCase < ActiveSupport::TestCase
   include Capybara::Minitest::Assertions
 

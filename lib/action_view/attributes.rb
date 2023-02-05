@@ -27,7 +27,7 @@ class ActionView::Attributes < DelegateClass(Hash)
       end
     end
 
-    super(values, &merge_conflicts)
+    super(values.to_h, &merge_conflicts)
 
     self
   end

@@ -8,6 +8,8 @@ version links.
 
 ## main
 
+## 0.1.1 (Feb 8, 2023)
+
 *   Ensure that attribute values like [data-action](https://stimulus.hotwired.dev/reference/actions)
     descriptor syntax aren't escaped too many times when transformed to Token Lists
 

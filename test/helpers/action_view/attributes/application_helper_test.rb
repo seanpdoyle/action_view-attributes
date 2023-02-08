@@ -105,6 +105,16 @@ class ActionView::Attributes::ApplicationHelper::Test < ActionView::TestCase
     assert_equal %(<form data-controller="one two three"></form>), tag.with_attributes(one, two, data: {controller: "three"}).form
   end
 
+  test "tag.with_attributes only escapes once" do
+    attributes = tag.attributes(
+      {data: {action: "click->button#1"}},
+      {data: {action: ["click->button#2", "click->button#3"]}},
+      {data: {action: "click->button#4"}}
+    )
+
+    assert_equal %(data-action="click->button#1 click->button#2 click->button#3 click->button#4"), CGI.unescape_html(attributes.to_s)
+  end
+
   test "with_attributes can have options decorated onto it" do
     with_attributes class: "one two" do |styled|
       assert_equal %(<a class="one two" href="/">styled</a>), styled.link_to("styled", "/")

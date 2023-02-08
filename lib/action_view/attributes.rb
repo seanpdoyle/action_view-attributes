@@ -43,8 +43,6 @@ class ActionView::Attributes < DelegateClass(Hash)
 
   private
 
-  delegate :token_list, to: :@view_context
-
   def deep_merge_token_lists(attributes, overrides, namespace:)
     attributes.merge(overrides.to_h) do |name, left, right|
       if token_list?("#{namespace}-#{name.to_s.dasherize}")
@@ -65,5 +63,16 @@ class ActionView::Attributes < DelegateClass(Hash)
 
   def token_list_patterns
     token_lists.select { |token_list| token_list.is_a?(Regexp) }
+  end
+
+  def token_list(left, ...)
+    left =
+      if left.is_a?(String)
+        CGI.unescape_html(left)
+      else
+        left
+      end
+
+    @view_context.token_list(left, ...)
   end
 end

@@ -8,6 +8,8 @@ version links.
 
 ## main
 
+## 0.1.2 (Feb 8, 2023)
+
 *   Special case `data-action` descriptor syntax like `->` when escaping
     `token_list` calls
 

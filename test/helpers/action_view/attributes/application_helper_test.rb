@@ -112,7 +112,7 @@ class ActionView::Attributes::ApplicationHelper::Test < ActionView::TestCase
       {data: {action: "click->button#4"}}
     )
 
-    assert_equal %(data-action="click->button#1 click->button#2 click->button#3 click->button#4"), CGI.unescape_html(attributes.to_s)
+    assert_equal %(data-action="click-&gt;button#1 click-&gt;button#2 click-&gt;button#3 click-&gt;button#4"), attributes.to_s
   end
 
   test "with_attributes can have options decorated onto it" do

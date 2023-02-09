@@ -65,14 +65,7 @@ class ActionView::Attributes < DelegateClass(Hash)
     token_lists.select { |token_list| token_list.is_a?(Regexp) }
   end
 
-  def token_list(left, ...)
-    left =
-      if left.is_a?(String)
-        CGI.unescape_html(left)
-      else
-        left
-      end
-
-    @view_context.token_list(left, ...)
+  def token_list(...)
+    @view_context.token_list(...).tap { _1.gsub!("-&gt;", "->") }
   end
 end

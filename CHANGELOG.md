@@ -8,6 +8,11 @@ version links.
 
 ## main
 
+*   Special case `data-action` descriptor syntax like `->` when escaping
+    `token_list` calls
+
+    *Sean Doyle*
+
 ## 0.1.1 (Feb 8, 2023)
 
 *   Ensure that attribute values like [data-action](https://stimulus.hotwired.dev/reference/actions)

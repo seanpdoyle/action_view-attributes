@@ -31,8 +31,7 @@ module ActionView::Attributes::ApplicationHelper
   #   secondary = button.with_attributes class: "text-blue-500 border-blue-500"
   #   secondary.link_to "I have a blue border", "/"
   #   #=> <a class="border rounded-sm p-4 text-blue-500 border-blue-500" href="/">I have a blue border</a>
-  #
-  ruby2_keywords def with_attributes(*values, &block)
-    with_options(tag.attributes(*values), &block)
+  ruby2_keywords def with_attributes(*values, &block) # rubocop:disable Style/ArgumentsForwarding
+    with_options(tag.attributes(*values), &block)     # rubocop:disable Style/ArgumentsForwarding
   end
 end

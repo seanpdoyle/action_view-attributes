@@ -8,6 +8,10 @@ version links.
 
 ## main
 
+*   Expand version matrix to support `ruby@3.3` and `rails@7.2`
+
+    *Sean Doyle*
+
 ## 0.1.2 (Feb 8, 2023)
 
 *   Special case `data-action` descriptor syntax like `->` when escaping

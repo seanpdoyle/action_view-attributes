@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "action_view-attributes"
-  spec.version = "0.1.2"
+  spec.version = "0.1.3"
   spec.authors = ["Sean Doyle"]
   spec.email = ["sean.p.doyle24@gmail.com"]
   spec.homepage = "https://github.com/seanpdoyle/action_view-attributes"

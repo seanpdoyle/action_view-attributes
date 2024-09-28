@@ -8,6 +8,8 @@ version links.
 
 ## main
 
+## 0.1.3 (Sep 27, 2024)
+
 *   Expand version matrix to support `ruby@3.3` and `rails@7.2`
 
     *Sean Doyle*

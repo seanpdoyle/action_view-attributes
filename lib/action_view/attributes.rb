@@ -11,8 +11,8 @@ class ActionView::Attributes < DelegateClass(Hash)
     ActionView::Attributes.new(@view_context, super, &@serializer)
   end
 
-  def merge(values, &block)
-    dup.merge!(values, &block)
+  def merge(values, &block)     # rubocop:disable Style/ArgumentsForwarding
+    dup.merge!(values, &block)  # rubocop:disable Style/ArgumentsForwarding
   end
   alias_method :deep_merge, :merge
 

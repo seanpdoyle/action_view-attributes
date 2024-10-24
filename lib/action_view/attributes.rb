@@ -19,7 +19,7 @@ class ActionView::Attributes < DelegateClass(Hash)
   def merge!(values, &block)
     merge_conflicts = block || proc do |name, left, right|
       if token_list?(name)
-        token_list(left, right)
+        @view_context.token_list(left, right)
       elsif left.respond_to?(:merge) && right.respond_to?(:to_h)
         deep_merge_token_lists left, right, namespace: name
       else
@@ -46,7 +46,7 @@ class ActionView::Attributes < DelegateClass(Hash)
   def deep_merge_token_lists(attributes, overrides, namespace:)
     attributes.merge(overrides.to_h) do |name, left, right|
       if token_list?("#{namespace}-#{name.to_s.dasherize}")
-        token_list(left, right)
+        @view_context.token_list(left, right)
       else
         right
       end
@@ -63,9 +63,5 @@ class ActionView::Attributes < DelegateClass(Hash)
 
   def token_list_patterns
     token_lists.select { |token_list| token_list.is_a?(Regexp) }
-  end
-
-  def token_list(...)
-    @view_context.token_list(...).tap { _1.gsub!("-&gt;", "->") }
   end
 end

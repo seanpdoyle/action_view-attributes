@@ -105,14 +105,27 @@ class ActionView::Attributes::ApplicationHelper::Test < ActionView::TestCase
     assert_equal %(<form data-controller="one two three"></form>), tag.with_attributes(one, two, data: {controller: "three"}).form
   end
 
-  test "tag.with_attributes only escapes once" do
-    attributes = tag.attributes(
+  test "tag.attributes only escapes -> once when merged" do
+    attributes = [
       {data: {action: "click->button#1"}},
       {data: {action: ["click->button#2", "click->button#3"]}},
       {data: {action: "click->button#4"}}
-    )
+    ].map { |values| tag.attributes(values) }.reduce(:merge!)
 
-    assert_equal %(data-action="click-&gt;button#1 click-&gt;button#2 click-&gt;button#3 click-&gt;button#4"), attributes.to_s
+    @rendered = tag.div(nil, **attributes)
+
+    assert_element "div", "data-action": "click->button#1 click->button#2 click->button#3 click->button#4"
+  end
+
+  test "tag.attributes only escapes & once when merged" do
+    attributes = [
+      {class: "[&_a]:underline"},
+      {class: "[&_a]:text-blue-600"}
+    ].map { |values| tag.attributes(values) }.reduce(:merge!)
+
+    @rendered = tag.div(nil, **attributes)
+
+    assert_element "div", class: "[&_a]:underline [&_a]:text-blue-600"
   end
 
   test "with_attributes can have options decorated onto it" do

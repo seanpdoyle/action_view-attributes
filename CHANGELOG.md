@@ -8,6 +8,8 @@ version links.
 
 ## main
 
+## 0.2.0 (Oct 24, 2024)
+
 *   Reverse [special casing of `data-action`](#012-feb-8-2023) syntax.
 
     *Sean Doyle*

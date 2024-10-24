@@ -8,6 +8,10 @@ version links.
 
 ## main
 
+*   Reverse [special casing of `data-action`](#012-feb-8-2023) syntax.
+
+    *Sean Doyle*
+
 ## 0.1.3 (Sep 27, 2024)
 
 *   Expand version matrix to support `ruby@3.3` and `rails@7.2`

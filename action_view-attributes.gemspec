@@ -8,11 +8,13 @@ Gem::Specification.new do |spec|
   spec.description = spec.summary
   spec.license = "MIT"
 
+  spec.required_ruby_version = ">= 3.1.0"
+
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/seanpdoyle/action_view-attributes"
   spec.metadata["changelog_uri"] = "https://github.com/seanpdoyle/action_view-attributes/blob/main/CHANGELOG.md"
 
   spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
-  spec.add_dependency "rails", ">= 6.1.3.1"
+  spec.add_dependency "rails", ">= 7.1.0"
 end
